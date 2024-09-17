@@ -1,0 +1,12 @@
+.app{
+  background-color: white;
+  color: black;
+  width: 90;
+  height: 90vh;
+  margin: 0;
+  padding: 0;
+}
+
+h1{
+  font-family: 'righteous', sans-serif; 
+}
