@@ -3,23 +3,23 @@ import "./styles/LoginPage.css";
 import { UrlContext } from "./contexte/useUrl";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons"; // Import des icônes
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons"; 
 
 export function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // État pour contrôler la visibilité du mot de passe
+  const [showPassword, setShowPassword] = useState(false); 
 
   const { url } = useContext(UrlContext);
 
   function loginFunction() {
-    console.log(email, password, url);
     let formData = {
       email: email,
-      password: password,
+      mot_de_passe: password,
     };
+    
     axios
-      .post(`${url}/api.php`, formData)
+      .post(`${url}/projet-dev/api.php`, formData)
       .then((response) => {
         console.log(response.data);
         setEmail("");
@@ -49,7 +49,7 @@ export function LoginPage() {
 
             <div className="relative w-80 mt-10">
               <input
-                type={showPassword ? "text" : "password"} // Changer le type d'input selon l'état
+                type={showPassword ? "text" : "password"} 
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
