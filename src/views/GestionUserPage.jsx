@@ -98,7 +98,74 @@ export default function GestionUserPage() {
             </div>
           </div>
         )}
-        {showList && <p className="mt-5">ListView</p>}
+        {showList && (
+          <div className="ListMembresList mt-5">
+            <div className="headList">
+              <li className="nomList">Nom complet</li>
+              <li className="adresseList">Adresse email</li>
+              <li className="posteList">Poste</li>
+              <li className="deleteList"></li>
+            </div>
+            <div className="bodyValue">
+              <div className="BodyList">
+                <li className="nomList">ANDRIANARISON Steeve Kevin</li>
+                <li className="adresseList">steeve@gmail.com</li>
+                <li className="posteList">Stagiaire</li>
+                <li className="deleteList deleteuser">
+                  <FontAwesomeIcon icon={faTrash} className="mb-2 w-5 h-5" />
+                </li>
+              </div>
+              <div className="BodyList">
+                <li className="nomList">ANDRIANARISON Steeve Kevin</li>
+                <li className="adresseList">steeve@gmail.com</li>
+                <li className="posteList">Stagiaire</li>
+                <li className="deleteList deleteuser">
+                  <FontAwesomeIcon icon={faTrash} className="mb-2 w-5 h-5" />
+                </li>
+              </div>
+              <div className="BodyList">
+                <li className="nomList">ANDRIANARISON Steeve Kevin</li>
+                <li className="adresseList">steeve@gmail.com</li>
+                <li className="posteList">Stagiaire</li>
+                <li className="deleteList deleteuser">
+                  <FontAwesomeIcon icon={faTrash} className="mb-2 w-5 h-5" />
+                </li>
+              </div>
+              <div className="BodyList">
+                <li className="nomList">ANDRIANARISON Steeve Kevin</li>
+                <li className="adresseList">steeve@gmail.com</li>
+                <li className="posteList">Stagiaire</li>
+                <li className="deleteList deleteuser">
+                  <FontAwesomeIcon icon={faTrash} className="mb-2 w-5 h-5" />
+                </li>
+              </div>
+              <div className="BodyList">
+                <li className="nomList">ANDRIANARISON Steeve Kevin</li>
+                <li className="adresseList">steeve@gmail.com</li>
+                <li className="posteList">Stagiaire</li>
+                <li className="deleteList deleteuser">
+                  <FontAwesomeIcon icon={faTrash} className="mb-2 w-5 h-5" />
+                </li>
+              </div>
+              <div className="BodyList">
+                <li className="nomList">ANDRIANARISON Steeve Kevin</li>
+                <li className="adresseList">steeve@gmail.com</li>
+                <li className="posteList">Stagiaire</li>
+                <li className="deleteList deleteuser">
+                  <FontAwesomeIcon icon={faTrash} className="mb-2 w-5 h-5" />
+                </li>
+              </div>
+              <div className="BodyList">
+                <li className="nomList">ANDRIANARISON Steeve Kevin</li>
+                <li className="adresseList">steeve@gmail.com</li>
+                <li className="posteList">Stagiaire</li>
+                <li className="deleteList deleteuser">
+                  <FontAwesomeIcon icon={faTrash} className="mb-2 w-5 h-5" />
+                </li>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
