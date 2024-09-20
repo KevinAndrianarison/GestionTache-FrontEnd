@@ -2,24 +2,32 @@ import { createContext, useState } from "react";
 
 export const ShowContext = createContext({
   showSpinner: false,
-  showMainPage: true,
-  showLogin: false,
+  showMainPage: false,
+  showLoginPage: true,
+  showLoginComponent: true,
+  showSignUpComponent: false,
 });
 
 export function ShowContextProvider({ children }) {
   const [showSpinner, setShowSpinner] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
-  const [showMainPage, setShowMainPage] = useState(true);
+  const [showLoginPage, setShowLoginPage] = useState(true);
+  const [showLoginComponent, setShowLoginComponent] = useState(true);
+  const [showSignUpComponent, setShowSignUpComponent] = useState(false);
+  const [showMainPage, setShowMainPage] = useState(false);
 
   return (
     <ShowContext.Provider
       value={{
         showSpinner,
-        showLogin,
+        showLoginPage,
         showMainPage,
+        showLoginComponent,
+        showSignUpComponent,
+        setShowLoginComponent,
         setShowMainPage,
-        setShowLogin,
+        setShowLoginPage,
         setShowSpinner,
+        setShowSignUpComponent
       }}
     >
       {children}

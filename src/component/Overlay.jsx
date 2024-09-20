@@ -2,8 +2,8 @@ import "../styles/Overlay.css";
 
 export default function Overlay() {
   return (
-    <div class="overlay">
-      <span class="loader"></span>
+    <div className="overlay">
+      <span className="loader"></span>
     </div>
   );
 }

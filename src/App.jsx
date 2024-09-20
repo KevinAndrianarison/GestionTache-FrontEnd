@@ -4,16 +4,17 @@ import Overlay from "./component/Overlay";
 import { ShowContext } from "./contexte/useShow";
 import { useContext } from "react";
 import MainPage from "./views/MainPage";
+import AlertComponent from "./component/AlertComponent";
 
 function App() {
-  const { showSpinner, showLogin, showMainPage } =
-    useContext(ShowContext);
+  const { showSpinner, showLoginPage, showMainPage } = useContext(ShowContext);
 
   return (
     <div className="app">
-      {showLogin && <LoginPage />}
+      {showLoginPage && <LoginPage />}
       {showSpinner && <Overlay />}
       {showMainPage && <MainPage />}
+      <AlertComponent />
     </div>
   );
 }

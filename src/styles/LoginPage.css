@@ -8,7 +8,7 @@ p {
 }
 
 .login {
-  height: 80%;
+  height: 70%;
   width: 300px;
   margin: 0 auto;
   display: flex;
@@ -52,6 +52,12 @@ p {
   font-family: "righteous";
 }
 
+.titreSignin {
+  font-size: 1.8em;
+  color: rgba(255, 255, 255, 0.849);
+  font-family: "righteous";
+}
+
 .input {
   color: rgba(255, 255, 255, 0.849);
 }
@@ -75,11 +81,37 @@ p {
   font-size: 14px;
   cursor: pointer;
   transition: all 0.5s ease-in-out;
-
 }
 
-.forgot:hover{
-    color: rgba(255, 255, 255, 0.849);
-
+.forgot:hover {
+  color: rgba(255, 255, 255, 0.849);
 }
 
+.signup {
+  width: 100%;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+}
+
+.new {
+  color: rgba(255, 255, 255, 0.849);
+  font-size: 14px;
+}
+.already {
+  color: rgba(255, 255, 255, 0.849);
+  font-size: 14px;
+}
+
+.signIn {
+  cursor: pointer;
+  color: var(--color-secondary);
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.signUp {
+  cursor: pointer;
+  color: var(--color-secondary);
+  font-weight: bold;
+}

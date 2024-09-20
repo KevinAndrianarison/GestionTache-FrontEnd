@@ -115,54 +115,6 @@ export default function GestionUserPage() {
                   <FontAwesomeIcon icon={faTrash} className="mb-2 w-5 h-5" />
                 </li>
               </div>
-              <div className="BodyList">
-                <li className="nomList">ANDRIANARISON Steeve Kevin</li>
-                <li className="adresseList">steeve@gmail.com</li>
-                <li className="posteList">Stagiaire</li>
-                <li className="deleteList deleteuser">
-                  <FontAwesomeIcon icon={faTrash} className="mb-2 w-5 h-5" />
-                </li>
-              </div>
-              <div className="BodyList">
-                <li className="nomList">ANDRIANARISON Steeve Kevin</li>
-                <li className="adresseList">steeve@gmail.com</li>
-                <li className="posteList">Stagiaire</li>
-                <li className="deleteList deleteuser">
-                  <FontAwesomeIcon icon={faTrash} className="mb-2 w-5 h-5" />
-                </li>
-              </div>
-              <div className="BodyList">
-                <li className="nomList">ANDRIANARISON Steeve Kevin</li>
-                <li className="adresseList">steeve@gmail.com</li>
-                <li className="posteList">Stagiaire</li>
-                <li className="deleteList deleteuser">
-                  <FontAwesomeIcon icon={faTrash} className="mb-2 w-5 h-5" />
-                </li>
-              </div>
-              <div className="BodyList">
-                <li className="nomList">ANDRIANARISON Steeve Kevin</li>
-                <li className="adresseList">steeve@gmail.com</li>
-                <li className="posteList">Stagiaire</li>
-                <li className="deleteList deleteuser">
-                  <FontAwesomeIcon icon={faTrash} className="mb-2 w-5 h-5" />
-                </li>
-              </div>
-              <div className="BodyList">
-                <li className="nomList">ANDRIANARISON Steeve Kevin</li>
-                <li className="adresseList">steeve@gmail.com</li>
-                <li className="posteList">Stagiaire</li>
-                <li className="deleteList deleteuser">
-                  <FontAwesomeIcon icon={faTrash} className="mb-2 w-5 h-5" />
-                </li>
-              </div>
-              <div className="BodyList">
-                <li className="nomList">ANDRIANARISON Steeve Kevin</li>
-                <li className="adresseList">steeve@gmail.com</li>
-                <li className="posteList">Stagiaire</li>
-                <li className="deleteList deleteuser">
-                  <FontAwesomeIcon icon={faTrash} className="mb-2 w-5 h-5" />
-                </li>
-              </div>
             </div>
           </div>
         )}
