@@ -25,7 +25,6 @@ export function UserContextProvider({ children }) {
     setPoste("Directeur");
     setTelephone(5555);
     setStatut("user");
-    console.log(nomComplet, telephone);
   };
 
   return (

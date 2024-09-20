@@ -1,8 +1,12 @@
 import "../styles/LoginPage.css";
 import { ShowContext } from "../contexte/useShow";
+import axios from "axios";
+import { UrlContext } from "../contexte/useUrl";
 import { useState, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { MessageContext } from "../contexte/useMessage";
+
 export default function SignUpComponent() {
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
@@ -11,8 +15,14 @@ export default function SignUpComponent() {
   const [showMessageErrorEmail, setShowMessageErrorEmail] = useState(false);
   const [showMessageMdpError, setShowMessageMdpError] = useState(false);
 
-  const { setShowLoginComponent, setShowSignUpComponent } =
-    useContext(ShowContext);
+  const {
+    setShowLoginComponent,
+    setShowSignUpComponent,
+    setShowSpinner,
+    setShowConfirmMdp,
+  } = useContext(ShowContext);
+  const { url } = useContext(UrlContext);
+  const { setMessageSucces, setMessageError } = useContext(MessageContext);
 
   function showLoginComponent() {
     setShowSignUpComponent(false);
@@ -20,7 +30,29 @@ export default function SignUpComponent() {
   }
 
   function crateAdmin() {
-    console.log("Eto", passwordVerify, email);
+    setShowConfirmMdp(true);
+    // setShowSpinner(true);
+    // let formData = {
+    //   email_user: email,
+    //   mot_de_passe_user: passwordVerify,
+    //   statut: "admin",
+    // };
+    // axios
+    //   .post(`${url}/projet-dev/app/inscription.php`, formData)
+    //   .then((response) => {
+    //     setEmail("");
+    //     setPassword("");
+    //     setPasswordVerify("");
+    //     setMessageSucces("Inscription réussi !");
+    //     setShowSpinner(false);
+    //     setTimeout(() => {
+    //       setMessageSucces("");
+    //     }, 5000);
+    //   })
+    //   .catch((err) => {
+    //     console.error(err);
+    //     setShowSpinner(false);
+    //   });
   }
 
   function RegexEmail(email) {

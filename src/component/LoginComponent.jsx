@@ -14,7 +14,6 @@ export default function LoginComponent() {
 
   const { url } = useContext(UrlContext);
   const { setMessageSucces, setMessageError } = useContext(MessageContext);
-
   const {
     setShowLoginComponent,
     setShowSignUpComponent,
@@ -36,12 +35,15 @@ export default function LoginComponent() {
     };
 
     axios
-      .post(`${url}/projet-dev/app1/api.php`, formData)
+      .post(`${url}/projet-dev/app/login.php`, formData)
       .then((response) => {
-        console.log(response.data.user.statut);
         setEmail("");
         setPassword("");
         if (response.data.user.statut === "admin") {
+          localStorage.setItem("user", JSON.stringify(response.data));
+          const userString = localStorage.getItem("user");
+          console.log(JSON.parse(userString), "here");
+
           setShowLoginPage(false);
           setShowMainPage(true);
         }

@@ -44,6 +44,9 @@
   .labelBTN {
     display: none;
   }
+  .posteList{
+    display: none;
+  }
 }
 
 .titleList {
@@ -78,7 +81,6 @@
 }
 
 .photouser {
-  background-color: red;
   width: 100px;
   height: 85px;
   border-radius: 50%;

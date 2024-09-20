@@ -3,9 +3,10 @@ import { createContext, useState } from "react";
 export const ShowContext = createContext({
   showSpinner: false,
   showMainPage: false,
-  showLoginPage: true,
+  showLoginPage: false,
   showLoginComponent: true,
   showSignUpComponent: false,
+  showConfirmMdp: false,
 });
 
 export function ShowContextProvider({ children }) {
@@ -14,6 +15,8 @@ export function ShowContextProvider({ children }) {
   const [showLoginComponent, setShowLoginComponent] = useState(true);
   const [showSignUpComponent, setShowSignUpComponent] = useState(false);
   const [showMainPage, setShowMainPage] = useState(false);
+  const [showConfirmMdp, setShowConfirmMdp] = useState(false);
+
 
   return (
     <ShowContext.Provider
@@ -23,7 +26,9 @@ export function ShowContextProvider({ children }) {
         showMainPage,
         showLoginComponent,
         showSignUpComponent,
+        showConfirmMdp,
         setShowLoginComponent,
+        setShowConfirmMdp,
         setShowMainPage,
         setShowLoginPage,
         setShowSpinner,
