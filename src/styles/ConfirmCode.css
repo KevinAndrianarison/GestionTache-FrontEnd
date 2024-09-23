@@ -20,12 +20,12 @@
   z-index: 12;
 }
 
-.content{
+.content {
   width: 300px;
-  margin:  0 auto;
+  margin: 0 auto;
 }
 
-.btnValiderCode{
+.btnValiderCode {
   background-color: var(--color-secondary);
   border-radius: 5px;
   padding-top: 10px;
@@ -33,12 +33,20 @@
   font-weight: bold;
 }
 
-
 @media screen and (max-width: 768px) {
-  .formModal{
+  .formModal {
     width: 90%;
   }
-  .content{
+  .content {
     width: 90%;
   }
+}
+
+.close-icon {
+  position: relative;
+  bottom: 20px;
+  left: 98%;
+  font-size: 24px;
+  cursor: pointer;
+  color: #000000b2;
 }

@@ -42,8 +42,6 @@ export default function LoginComponent() {
         if (response.data.user.statut === "admin") {
           localStorage.setItem("user", JSON.stringify(response.data));
           const userString = localStorage.getItem("user");
-          console.log(JSON.parse(userString), "here");
-
           setShowLoginPage(false);
           setShowMainPage(true);
         }

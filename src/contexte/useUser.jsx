@@ -3,6 +3,7 @@ import { createContext, useState } from "react";
 export const UserContext = createContext({
   nomComplet: "",
   email: "",
+  emailTovalidate: "",
   motDePasse: "",
   poste: "",
   telephone: null,
@@ -13,6 +14,7 @@ export const UserContext = createContext({
 export function UserContextProvider({ children }) {
   const [nomComplet, setNomComplet] = useState("");
   const [email, setEmail] = useState("");
+  const [emailTovalidate, setEmailTovalidate] = useState("");
   const [poste, setPoste] = useState("");
   const [motDePasse, setMotDePasse] = useState("");
   const [telephone, setTelephone] = useState(null);
@@ -36,6 +38,8 @@ export function UserContextProvider({ children }) {
         motDePasse,
         telephone,
         statut,
+        emailTovalidate,
+        setEmailTovalidate,
         changeValue,
       }}
     >

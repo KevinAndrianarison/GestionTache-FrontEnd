@@ -2,6 +2,7 @@ import "../styles/LoginPage.css";
 import { ShowContext } from "../contexte/useShow";
 import axios from "axios";
 import { UrlContext } from "../contexte/useUrl";
+import { UserContext } from "../contexte/useUser";
 import { useState, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
@@ -22,6 +23,7 @@ export default function SignUpComponent() {
     setShowConfirmMdp,
   } = useContext(ShowContext);
   const { url } = useContext(UrlContext);
+  const { setEmailTovalidate } = useContext(UserContext);
   const { setMessageSucces, setMessageError } = useContext(MessageContext);
 
   function showLoginComponent() {
@@ -30,29 +32,30 @@ export default function SignUpComponent() {
   }
 
   function crateAdmin() {
-    setShowConfirmMdp(true);
-    // setShowSpinner(true);
-    // let formData = {
-    //   email_user: email,
-    //   mot_de_passe_user: passwordVerify,
-    //   statut: "admin",
-    // };
-    // axios
-    //   .post(`${url}/projet-dev/app/inscription.php`, formData)
-    //   .then((response) => {
-    //     setEmail("");
-    //     setPassword("");
-    //     setPasswordVerify("");
-    //     setMessageSucces("Inscription réussi !");
-    //     setShowSpinner(false);
-    //     setTimeout(() => {
-    //       setMessageSucces("");
-    //     }, 5000);
-    //   })
-    //   .catch((err) => {
-    //     console.error(err);
-    //     setShowSpinner(false);
-    //   });
+    setShowSpinner(true);
+    let formData = {
+      email_user: email,
+      mot_de_passe_user: passwordVerify,
+      statut: "admin",
+    };
+    axios
+      .post(`${url}/projet-dev/app/inscriptionTest.php`, formData)
+      .then((response) => {
+        setEmailTovalidate(email)
+        setEmail("");
+        setPassword("");
+        setPasswordVerify("");
+        setMessageSucces("Inscription réussi !");
+        setShowConfirmMdp(true);
+        setShowSpinner(false);
+        setTimeout(() => {
+          setMessageSucces("");
+        }, 5000);
+      })
+      .catch((err) => {
+        console.error(err);
+        setShowSpinner(false);
+      });
   }
 
   function RegexEmail(email) {
