@@ -7,6 +7,9 @@ export const ShowContext = createContext({
   showLoginComponent: true,
   showSignUpComponent: false,
   showConfirmMdp: false,
+  showLogout: false,
+  showDeleteUser: false,
+  showcreateTask: false,
 });
 
 export function ShowContextProvider({ children }) {
@@ -16,7 +19,9 @@ export function ShowContextProvider({ children }) {
   const [showSignUpComponent, setShowSignUpComponent] = useState(false);
   const [showMainPage, setShowMainPage] = useState(false);
   const [showConfirmMdp, setShowConfirmMdp] = useState(false);
-
+  const [showLogout, setShowLogout] = useState(false);
+  const [showDeleteUser, setShowDeleteUser] = useState(false);
+  const [showcreateTask, setShowcreateTask] = useState(false);
 
   return (
     <ShowContext.Provider
@@ -27,12 +32,18 @@ export function ShowContextProvider({ children }) {
         showLoginComponent,
         showSignUpComponent,
         showConfirmMdp,
+        showLogout,
+        showDeleteUser,
+        showcreateTask,
         setShowLoginComponent,
+        setShowcreateTask,
         setShowConfirmMdp,
         setShowMainPage,
         setShowLoginPage,
         setShowSpinner,
-        setShowSignUpComponent
+        setShowSignUpComponent,
+        setShowLogout,
+        setShowDeleteUser,
       }}
     >
       {children}

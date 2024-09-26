@@ -38,6 +38,9 @@
   .errEmail {
     font-size: 12px;
   }
+  .faTrash{
+    height: 15px;
+  }
 }
 
 @media screen and (max-width: 505px) {

@@ -68,7 +68,7 @@ export default function ConfirmCode() {
 
   return (
     <div className="showModal">
-      <div className="formModal">
+      <div className="formModale">
         <FontAwesomeIcon
           icon={faTimes}
           onClick={closeValideCompte}

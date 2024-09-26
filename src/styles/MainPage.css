@@ -11,24 +11,19 @@
   color: rgba(0, 0, 0, 0.747);
 }
 
-
 .description {
   font-size: 1.2em;
 }
 
-
-
-.logos{
-
+.logos {
   width: 120px;
   height: 100px;
   background-size: cover;
   background-repeat: no-repeat;
   background-image: url("../assets//google-tasks-venez-a-bout-de-toutes-vos-taches-er4IE9-removebg-preview.png");
-
 }
 
-.ulNavBar{
+.ulNavBar {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -43,11 +38,19 @@
   .description {
     display: none;
   }
-  .title{
+  .title {
     font-size: 2em;
   }
-  .ulNavBar, .Page{
+  .ulNavBar,
+  .Page {
     font-size: 12px;
   }
+}
 
+.faSignOutAlt {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.747);
 }

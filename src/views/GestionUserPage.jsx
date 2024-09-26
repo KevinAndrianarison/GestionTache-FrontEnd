@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import "../styles/GestionUserPage.css";
 import { faTrash, faList, faGrip } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ShowContext } from "../contexte/useShow";
 
 export default function GestionUserPage() {
   const [email, setEmail] = useState("");
@@ -9,9 +10,15 @@ export default function GestionUserPage() {
   const [showList, setShowList] = useState(false);
   const [showGrid, setShowGrid] = useState(true);
 
+  const { setShowDeleteUser } = useContext(ShowContext);
+
   function switchToGrid() {
     setShowList(false);
     setShowGrid(true);
+  }
+
+  function deleteuser() {
+    setShowDeleteUser(true);
   }
 
   function switchToList() {
@@ -93,7 +100,11 @@ export default function GestionUserPage() {
                 </div>
               </div>
               <div className="deleteuser">
-                <FontAwesomeIcon icon={faTrash} className="mb-2 w-5 h-5" />
+                <FontAwesomeIcon
+                  onClick={deleteuser}
+                  icon={faTrash}
+                  className="mb-2 faTrash"
+                />
               </div>
             </div>
           </div>
@@ -112,7 +123,11 @@ export default function GestionUserPage() {
                 <li className="adresseList">steeve@gmail.com</li>
                 <li className="posteList">Stagiaire</li>
                 <li className="deleteList deleteuser">
-                  <FontAwesomeIcon icon={faTrash} className="mb-2 w-5 h-5" />
+                  <FontAwesomeIcon
+                    onClick={deleteuser}
+                    icon={faTrash}
+                    className="mb-2 faTrash"
+                  />
                 </li>
               </div>
             </div>

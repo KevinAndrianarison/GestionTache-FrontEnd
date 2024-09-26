@@ -10,6 +10,7 @@ import { MessageContext } from "../contexte/useMessage";
 
 export default function SignUpComponent() {
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [password, setPassword] = useState("");
   const [passwordVerify, setPasswordVerify] = useState("");
   const [email, setEmail] = useState("");
@@ -31,26 +32,39 @@ export default function SignUpComponent() {
     setShowLoginComponent(true);
   }
 
-  function crateAdmin() {
+  function createAdmin() {
     setShowSpinner(true);
-    let formData = {
-      email_user: email,
-      mot_de_passe_user: passwordVerify,
-      statut: "admin",
-    };
     axios
-      .post(`${url}/projet-dev/app/inscriptionTest.php`, formData)
+      .post(`${url}/projet-dev/app/ajout_nom_entite`, {
+        nom_entite: "",
+      })
       .then((response) => {
-        setEmailTovalidate(email)
-        setEmail("");
-        setPassword("");
-        setPasswordVerify("");
-        setMessageSucces("Inscription réussi !");
-        setShowConfirmMdp(true);
-        setShowSpinner(false);
-        setTimeout(() => {
-          setMessageSucces("");
-        }, 5000);
+        let formData = {
+          email_user: email,
+          mot_de_passe_user: passwordVerify,
+          statut: "admin",
+          id_entite: response.data.id_entite,
+        };
+        if (response.data.id_entite) {
+          axios
+            .post(`${url}/projet-dev/app/inscription.php`, formData)
+            .then((response) => {
+              setEmailTovalidate(email);
+              setEmail("");
+              setPassword("");
+              setPasswordVerify("");
+              setMessageSucces("Inscription réussi !");
+              setShowConfirmMdp(true);
+              setShowSpinner(false);
+              setTimeout(() => {
+                setMessageSucces("");
+              }, 5000);
+            })
+            .catch((err) => {
+              console.error(err);
+              setShowSpinner(false);
+            });
+        }
       })
       .catch((err) => {
         console.error(err);
@@ -88,6 +102,7 @@ export default function SignUpComponent() {
           <div className="relative w-80 mt-10">
             <input
               value={password}
+              type={showPassword ? "text" : "password"}
               onChange={(e) => {
                 setPassword(e.target.value);
 
@@ -115,6 +130,7 @@ export default function SignUpComponent() {
           <div className="relative w-80 mt-10">
             <input
               value={passwordVerify}
+              type={showConfirmPassword ? "text" : "password"}
               onChange={(e) => {
                 setPasswordVerify(e.target.value);
                 if (e.target.value !== password) {
@@ -129,9 +145,11 @@ export default function SignUpComponent() {
 
             <span
               className="absolute right-2 top-1/2 transform -translate-y-1/2 cursor-pointer text-white"
-              onClick={() => setShowPassword(!showPassword)}
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
             >
-              <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+              <FontAwesomeIcon
+                icon={showConfirmPassword ? faEyeSlash : faEye}
+              />
             </span>
           </div>
           {showMessageMdpError && (
@@ -146,7 +164,7 @@ export default function SignUpComponent() {
               showMessageMdpError ||
               showMessageErrorEmail
             }
-            onClick={crateAdmin}
+            onClick={createAdmin}
             className="btn mt-10"
           >
             S'inscrire

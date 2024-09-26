@@ -35,13 +35,18 @@ export default function LoginComponent() {
     };
 
     axios
-      .post(`${url}/projet-dev/app/login.php`, formData)
+      .post(`${url}/projet-dev/app/login.php`, formData, {
+        withCredentials: true,
+      })
       .then((response) => {
         setEmail("");
         setPassword("");
-        if (response.data.user.statut === "admin") {
+        if (
+          response.data.statut === "admin" &&
+          response.data.validite_compte === 1 &&
+          response.data.success === true
+        ) {
           localStorage.setItem("user", JSON.stringify(response.data));
-          const userString = localStorage.getItem("user");
           setShowLoginPage(false);
           setShowMainPage(true);
         }

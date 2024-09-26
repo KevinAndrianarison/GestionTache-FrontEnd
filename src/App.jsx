@@ -6,8 +6,15 @@ import { useContext, useEffect } from "react";
 import MainPage from "./views/MainPage";
 import AlertComponent from "./component/AlertComponent";
 import ConfirmCode from "./component/ConfirmCode";
+import LogoutComponent from "./component/LogoutComponent";
+import DeleteUser from "./component/DeleteUser";
+import CreateProject from "./component/CreateProject";
+import { UrlContext } from "./contexte/useUrl";
+import axios from "axios";
 
 function App() {
+  const { url } = useContext(UrlContext);
+
   const {
     showSpinner,
     showLoginPage,
@@ -15,6 +22,9 @@ function App() {
     showMainPage,
     setShowMainPage,
     setShowLoginPage,
+    showLogout,
+    showDeleteUser,
+    showcreateTask,
   } = useContext(ShowContext);
 
   useEffect(() => {
@@ -24,6 +34,16 @@ function App() {
       setShowMainPage(true);
       setShowLoginPage(false);
     }
+    axios
+      .get(`${url}/projet-dev/app/checksession.php`, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   }, []);
 
   return (
@@ -32,6 +52,9 @@ function App() {
       {showSpinner && <Overlay />}
       {showMainPage && <MainPage />}
       {showConfirmMdp && <ConfirmCode />}
+      {showLogout && <LogoutComponent />}
+      {showDeleteUser && <DeleteUser />}
+      {showcreateTask && <CreateProject />}
       <AlertComponent />
     </div>
   );

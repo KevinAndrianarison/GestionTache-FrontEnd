@@ -5,23 +5,39 @@ import {
   faUser,
   faPlusCircle,
   faUserPlus,
+  faSignOutAlt,
+  faCircleInfo
 } from "@fortawesome/free-solid-svg-icons";
 import AllprojectPage from "./AllprojectPage";
 import CreateprojectPage from "./CreateprojectPage";
 import GestionUserPage from "./GestionUserPage";
+import MyProfil from "./MyProfil";
 import MyprojectPage from "./MyprojectPage";
-
 import { Routes, Route, NavLink } from "react-router-dom";
+import { ShowContext } from "../contexte/useShow";
+import { useContext } from "react";
 
 export default function MainPage() {
+  const { setShowLogout } = useContext(ShowContext);
+
+  function logout() {
+    setShowLogout(true);
+  }
+
   return (
     <div className="mains">
       <div className="header">
         <div className="logos"></div>
+        <FontAwesomeIcon
+          onClick={logout}
+          icon={faSignOutAlt}
+          className=" faSignOutAlt w-8 h-8"
+        />
         <div className="title mt-2">Gestion des projets</div>
         <div className="description mt-2">
           Bienvenue sur votre espace de gestion de projet, où chaque tâche
-          trouve sa <b>solution</b> et chaque équipe atteint ses <b>objectifs</b> !
+          trouve sa <b>solution</b> et chaque équipe atteint ses{" "}
+          <b>objectifs</b> !
         </div>
       </div>
       <div className="body">
@@ -30,6 +46,19 @@ export default function MainPage() {
             <li className="mr-5 mt-2 pb-2">
               <NavLink
                 to="/"
+                className={({ isActive }) =>
+                  isActive
+                    ? "mr-2 border-b-4 border-yellow-500 pb-2"
+                    : "mr-2 pb-2"
+                }
+              >
+                <FontAwesomeIcon icon={faCircleInfo} className="mr-2" />
+                Mes informations
+              </NavLink>
+            </li>
+            <li className="mr-5 mt-2 pb-2">
+              <NavLink
+                to="/AllProject"
                 className={({ isActive }) =>
                   isActive
                     ? "mr-2 border-b-4 border-yellow-500 pb-2"
@@ -83,7 +112,8 @@ export default function MainPage() {
         </div>
         <div className="Page mt-5">
           <Routes>
-            <Route path="/" element={<AllprojectPage />} />
+            <Route path="/" element={<MyProfil />} />
+            <Route path="/AllProject" element={<AllprojectPage />} />
             <Route path="/MyProject" element={<MyprojectPage />} />
             <Route path="/createProject" element={<CreateprojectPage />} />
             <Route path="/AddUser" element={<GestionUserPage />} />

@@ -1,0 +1,20 @@
+.titreInfos {
+  font-weight: bold;
+  font-size: 18px;
+  color: rgba(0, 0, 0, 0.747);
+}
+.informationsForm {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+input {
+  padding-right: 2.5rem;
+}
+
+span.absolute {
+  right: 10px;
+}
+.divBtnInviter {
+
+}
