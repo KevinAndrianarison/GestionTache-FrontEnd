@@ -1,14 +1,30 @@
 import "../styles/MyprojectPage.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsis, faAnglesRight } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEllipsis,
+  faAnglesRight,
+  faEdit,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import Tippy from "@tippyjs/react";
+import { useState } from "react";
 
 export default function MyprojectPage() {
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  const toggleDropdown = () => {
+    setShowDropdown(!showDropdown);
+  };
+
+  const closeDropdown = () => {
+    setShowDropdown(false);
+  };
+
   return (
     <>
-      <div className="myprojectPage">
+      <div className="myprojectPage" onClick={closeDropdown}>
         <h1 className="titreMyproject">
-          <FontAwesomeIcon icon={faAnglesRight} className="  w-8 h-5" />
+          <FontAwesomeIcon icon={faAnglesRight} className="w-8 h-5" />
           Mes projets
         </h1>
         <div className="contentMyproject mt-4">
@@ -18,9 +34,7 @@ export default function MyprojectPage() {
             <li className="Titres">Titre du projet</li>
             <li className="Priorite">Priorité</li>
             <li className="Date">Date limite</li>
-            <li className="more mr-2">
-              
-            </li>
+            <li className="more mr-2"></li>
           </div>
           <div className="LISTE">
             <div className="BodyMyProject">
@@ -29,10 +43,32 @@ export default function MyprojectPage() {
               <li className="Titres">Créer un App web</li>
               <li className="Priorite">Urgent</li>
               <li className="Date">20/01/2003</li>
-              <li className="more">
-                <Tippy content="Modifier">
-                  <FontAwesomeIcon icon={faEllipsis} className="  w-5 h-5" />
+              <li className="more relative">
+                <Tippy content="Options">
+                  <FontAwesomeIcon
+                    icon={faEllipsis}
+                    className="w-5 h-5 cursor-pointer"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleDropdown();
+                    }}
+                  />
                 </Tippy>
+                {showDropdown && (
+                  <ul className="dropdown-menu absolute right-0 mt-2 py-1 w-32 bg-white shadow-lg rounded-md">
+                    <li className="dropdown-item flex items-center px-3 py-2 cursor-pointer hover:bg-blue-400 hover:text-white">
+                      <FontAwesomeIcon icon={faEdit} className="mr-2" />
+                      Modifier
+                    </li>
+                    <li className="dropdown-item flex items-center px-3 py-2 cursor-pointer hover:bg-blue-400 hover:text-white">
+                      <FontAwesomeIcon
+                        icon={faTrash}
+                        className="red-icon mr-2"
+                      />
+                      Supprimer
+                    </li>
+                  </ul>
+                )}
               </li>
             </div>
           </div>

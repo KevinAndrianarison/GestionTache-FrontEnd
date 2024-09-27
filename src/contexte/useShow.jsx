@@ -14,10 +14,10 @@ export const ShowContext = createContext({
 
 export function ShowContextProvider({ children }) {
   const [showSpinner, setShowSpinner] = useState(false);
-  const [showLoginPage, setShowLoginPage] = useState(true);
+  const [showLoginPage, setShowLoginPage] = useState(false);
   const [showLoginComponent, setShowLoginComponent] = useState(true);
   const [showSignUpComponent, setShowSignUpComponent] = useState(false);
-  const [showMainPage, setShowMainPage] = useState(false);
+  const [showMainPage, setShowMainPage] = useState(true);
   const [showConfirmMdp, setShowConfirmMdp] = useState(false);
   const [showLogout, setShowLogout] = useState(false);
   const [showDeleteUser, setShowDeleteUser] = useState(false);
