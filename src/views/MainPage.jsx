@@ -6,7 +6,7 @@ import {
   faPlusCircle,
   faUserPlus,
   faSignOutAlt,
-  faCircleInfo
+  faCircleInfo,
 } from "@fortawesome/free-solid-svg-icons";
 import AllprojectPage from "./AllprojectPage";
 import CreateprojectPage from "./CreateprojectPage";
@@ -16,18 +16,31 @@ import MyprojectPage from "./MyprojectPage";
 import { Routes, Route, NavLink } from "react-router-dom";
 import { ShowContext } from "../contexte/useShow";
 import { useContext } from "react";
+import Tippy from "@tippyjs/react";
 
 export default function MainPage() {
-  const { setShowLogout } = useContext(ShowContext);
+  const { setShowLogout, setShowcreateTask } = useContext(ShowContext);
 
   function logout() {
     setShowLogout(true);
+  }
+
+  function createProject() {
+    setShowcreateTask(true);
   }
 
   return (
     <div className="mains">
       <div className="header">
         <div className="logos"></div>
+        <Tippy content="Créer un projet">
+          <FontAwesomeIcon
+            onClick={createProject}
+            icon={faPlusCircle}
+            className="create  w-8 h-8"
+          />
+        </Tippy>
+
         <FontAwesomeIcon
           onClick={logout}
           icon={faSignOutAlt}
@@ -80,19 +93,6 @@ export default function MainPage() {
               >
                 <FontAwesomeIcon icon={faUser} className="mr-2" />
                 Mes projets
-              </NavLink>
-            </li>
-            <li className="mr-5 mt-2 pb-2">
-              <NavLink
-                to="/createProject"
-                className={({ isActive }) =>
-                  isActive
-                    ? "mr-2 border-b-4 border-yellow-500 pb-2"
-                    : "mr-2b pb-2"
-                }
-              >
-                <FontAwesomeIcon icon={faPlusCircle} className="mr-2 " />
-                Créer un projet
               </NavLink>
             </li>
             <li className="mt-2 pb-2">

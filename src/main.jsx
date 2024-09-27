@@ -1,5 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import 'tippy.js/dist/tippy.css';
 import "@fontsource/montserrat"; // POUR LES TEXTES
 import "@fontsource/righteous"; // POUR LES TITRES
 import App from "./App.jsx";

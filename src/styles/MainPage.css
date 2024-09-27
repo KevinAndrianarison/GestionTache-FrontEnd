@@ -54,3 +54,11 @@
   cursor: pointer;
   color: rgba(0, 0, 0, 0.747);
 }
+
+.create {
+  position: absolute;
+  top: 20px;
+  right: 80px;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.747);
+}

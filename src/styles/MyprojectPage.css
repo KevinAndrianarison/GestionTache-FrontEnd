@@ -1,0 +1,72 @@
+.titreMyproject {
+  font-weight: bold;
+  font-size: 26px;
+  color: rgba(0, 0, 0, 0.747);
+}
+
+.contentMyproject {
+  height: 60vh;
+  border: 2px solid rgba(128, 128, 128, 0.185);
+  border-radius: 10px;
+}
+
+.headMyProject {
+  display: flex;
+  height: 10%;
+  align-items: center;
+  border-bottom: 2px solid rgba(128, 128, 128, 0.185);
+  font-weight: bold;
+  justify-content: space-between;
+}
+
+.BodyMyProject {
+  display: flex;
+  height: 8%;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid rgba(128, 128, 128, 0.185);
+}
+
+li {
+  list-style: none;
+}
+
+.Statut,
+.Priorite,
+.Date {
+  width: 15%;
+  padding-left: 20px;
+}
+
+.Pris {
+  width: 30%;
+}
+
+.Titres {
+  width: 30%;
+}
+
+.more {
+  width: 5%;
+}
+
+.LISTE {
+  height: 85%;
+  overflow-y: scroll;
+}
+
+@media screen and (max-width: 768px) {
+  .Pris {
+    display: none;
+  }
+  .Date {
+    display: none;
+  }
+  .more {
+    width: 10%;
+  }
+  .Priorite{
+    width: 20%;
+  }
+
+}
