@@ -10,6 +10,10 @@ import LogoutComponent from "./component/LogoutComponent";
 import DeleteUser from "./component/DeleteUser";
 import CreateProject from "./component/CreateProject";
 import { UrlContext } from "./contexte/useUrl";
+import DeleteProject from "./component/DeleteProject";
+import SetProject from "./component/SetProject";
+import SeRetirer from "./component/SeRetirer";
+import DetailsProject from "./component/DetailsProjet";
 import axios from "axios";
 
 function App() {
@@ -25,6 +29,10 @@ function App() {
     showLogout,
     showDeleteUser,
     showcreateTask,
+    showDeleteTask,
+    showSetProject,
+    showDetails,
+    showSeretirer
   } = useContext(ShowContext);
 
   useEffect(() => {
@@ -38,9 +46,7 @@ function App() {
       .get(`${url}/projet-dev/app/checksession.php`, {
         withCredentials: true,
       })
-      .then((response) => {
-        console.log(response.data);
-      })
+      .then((response) => {})
       .catch((err) => {
         console.error(err);
       });
@@ -55,6 +61,11 @@ function App() {
       {showLogout && <LogoutComponent />}
       {showDeleteUser && <DeleteUser />}
       {showcreateTask && <CreateProject />}
+      {showDeleteTask && <DeleteProject />}
+      {showSetProject && <SetProject />}
+      {showSeretirer && <SeRetirer />}
+      {showDetails && <DetailsProject />}
+
       <AlertComponent />
     </div>
   );

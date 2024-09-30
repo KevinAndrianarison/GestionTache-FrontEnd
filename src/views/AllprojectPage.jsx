@@ -1,5 +1,7 @@
 import "../styles/MyprojectPage.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ShowContext } from "../contexte/useShow";
+import { useContext } from "react";
 import {
   faEllipsis,
   faAnglesRight,
@@ -12,9 +14,15 @@ import { useState } from "react";
 export default function AllprojectPage() {
   const [showDropdown, setShowDropdown] = useState(false);
 
+  const { setShowDetails } = useContext(ShowContext);
+
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown);
   };
+
+  function showDetails() {
+    setShowDetails(true);
+  }
 
   const closeDropdown = () => {
     setShowDropdown(false);
@@ -63,7 +71,10 @@ export default function AllprojectPage() {
                       />
                       Prendre
                     </li>
-                    <li className="dropdown-item flex items-center px-3 py-2 cursor-pointer hover:bg-blue-400 hover:text-white">
+                    <li
+                      onClick={showDetails}
+                      className="dropdown-item flex items-center px-3 py-2 cursor-pointer hover:bg-blue-400 hover:text-white"
+                    >
                       <FontAwesomeIcon icon={faInfoCircle} className="mr-2" />
                       Détails
                     </li>
