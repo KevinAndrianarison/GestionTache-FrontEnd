@@ -18,7 +18,7 @@ export default function MyprojectPage() {
   const { setShowDeleteTask, setShowSetProject, setShowSeretirer } =
     useContext(ShowContext);
 
-  const [activeDropdown, setActiveDropdown] = useState(null);
+  const [activeDropdown, setActiveDropdown] = useState("");
 
   const toggleDropdown = (index) => {
     setActiveDropdown((prev) => (prev === index ? null : index));

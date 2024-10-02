@@ -4,7 +4,7 @@ export const UrlContext = createContext({
   url: "",
 });
 export function UrlContextProvider({ children }) {
-  const [url, setUrl] = useState("http://192.168.1.115");
+  const [url, setUrl] = useState("http://192.168.1.115:8000");
 
   return (
     <UrlContext.Provider

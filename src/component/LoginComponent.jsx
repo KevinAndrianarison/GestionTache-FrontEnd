@@ -20,6 +20,7 @@ export default function LoginComponent() {
     setShowSpinner,
     setShowLoginPage,
     setShowMainPage,
+    setShowAdmin,
   } = useContext(ShowContext);
 
   function showSignUpComponent() {
@@ -30,31 +31,30 @@ export default function LoginComponent() {
   function loginFunction() {
     setShowSpinner(true);
     let formData = {
-      email_user: email,
-      mot_de_passe_user: password,
+      email: email,
+      mot_de_passe: password,
     };
 
     axios
-      .post(`${url}/projet-dev/app/login.php`, formData, {
-        withCredentials: true,
-      })
+      .post(`${url}/api/login`, formData)
       .then((response) => {
         setEmail("");
         setPassword("");
-        if (
-          response.data.statut === "admin" &&
-          response.data.validite_compte === 1 &&
-          response.data.success === true
-        ) {
-          localStorage.setItem("user", JSON.stringify(response.data));
+        if (response.data.message === "Connexion réussie") {
+          localStorage.setItem(
+            "user",
+            JSON.stringify(response.data.administrateur)
+          );
+          localStorage.setItem("token", JSON.stringify(response.data.token));
           setShowLoginPage(false);
+          setShowAdmin(true);
           setShowMainPage(true);
         }
         setShowSpinner(false);
       })
       .catch((err) => {
         console.error(err);
-        setMessageError("Email ou mot de passe incorrect !");
+        setMessageError(err.response.data.message);
         setShowSpinner(false);
         setTimeout(() => {
           setMessageError("");

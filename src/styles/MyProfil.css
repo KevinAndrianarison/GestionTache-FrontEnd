@@ -15,6 +15,14 @@ input {
 span.absolute {
   right: 10px;
 }
-.divBtnInviter {
 
+.btnEnregistrer {
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  background-color: var(--color-third);
+  height: 38px;
+  border-radius: 5px;
+  color: black;
+  width: 100%;
 }

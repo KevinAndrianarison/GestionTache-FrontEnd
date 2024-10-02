@@ -35,19 +35,19 @@ export default function SignUpComponent() {
   function createAdmin() {
     setShowSpinner(true);
     axios
-      .post(`${url}/projet-dev/app/ajout_nom_entite`, {
-        nom_entite: "",
+      .post(`${url}/api/entreprises`, {
+        nom: "",
       })
       .then((response) => {
         let formData = {
-          email_user: email,
-          mot_de_passe_user: passwordVerify,
-          statut: "admin",
-          id_entite: response.data.id_entite,
+          email: email,
+          mot_de_passe: passwordVerify,
+          // statut: "admin",
+          entreprise_id: response.data.entreprise_id,
         };
-        if (response.data.id_entite) {
+        if (response.data.entreprise_id) {
           axios
-            .post(`${url}/projet-dev/app/inscription.php`, formData)
+            .post(`${url}/api/register`, formData)
             .then((response) => {
               setEmailTovalidate(email);
               setEmail("");

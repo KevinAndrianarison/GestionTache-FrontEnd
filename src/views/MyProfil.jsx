@@ -1,10 +1,15 @@
 import "../styles/MyProfil.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGears, faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
+import { ShowContext } from "../contexte/useShow";
+import { MessageContext } from "../contexte/useMessage";
+import { UrlContext } from "../contexte/useUrl";
+import axios from "axios";
 
 export default function MyProfil() {
   const [password, setPassword] = useState("");
+  const [passwordNow, setPasswordNow] = useState("");
   const [passwordVerify, setPasswordVerify] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -15,6 +20,11 @@ export default function MyProfil() {
   const [email, setEmail] = useState("");
   const [telephone, setTelephone] = useState("");
   const [poste, setPoste] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+
+  const { url } = useContext(UrlContext);
+  const { setMessageSucces, setMessageError } = useContext(MessageContext);
+  const { setShowSpinner } = useContext(ShowContext);
 
   function RegexEmail(email) {
     const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -24,9 +34,133 @@ export default function MyProfil() {
     }
   }
 
-  function putInfos(){
-    console.log(nomSociete, nomComplet, email, telephone, poste);
-    
+  useEffect(() => {
+    const tokenString = localStorage.getItem("token");
+    let token = JSON.parse(tokenString);
+
+    const request1 = axios.get(`${url}/api/administrateurs/entreprise`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const request2 = axios.get(`${url}/api/administrateurs/profile`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    Promise.all([request1, request2])
+      .then(([entrepriseResponse, profileResponse]) => {
+        setnomSociete(entrepriseResponse.data.entreprise.nom);
+        setnomComplet(profileResponse.data.administrateur.nom);
+        setEmail(profileResponse.data.administrateur.email);
+        setTelephone(profileResponse.data.administrateur.telephone);
+        setPoste(profileResponse.data.administrateur.poste);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
+
+  function putMdp() {
+    setShowSpinner(true);
+    const tokenString = localStorage.getItem("token");
+    let token = JSON.parse(tokenString);
+
+    let formdata = {
+      ancien_mot_de_passe: passwordNow,
+      nouveau_mot_de_passe: passwordVerify,
+    };
+    axios
+      .post(`${url}/api/administrateurs/change-password`, formdata, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setMessageSucces("Modification de mot de passe réussi !");
+        setPasswordNow("");
+        setPassword("");
+        setPasswordVerify("");
+        setShowSpinner(false);
+        setTimeout(() => {
+          setMessageSucces("");
+        }, 5000);
+      })
+      .catch((err) => {
+        console.error(err);
+        setMessageError(err.response.data.message);
+        setShowSpinner(false);
+        setTimeout(() => {
+          setMessageError("");
+        }, 5000);
+      });
+  }
+
+  function putInfos() {
+    const userString = localStorage.getItem("user");
+    const tokenString = localStorage.getItem("token");
+    let user = JSON.parse(userString);
+    let token = JSON.parse(tokenString);
+
+    setShowSpinner(true);
+    if (nomSociete) {
+      let formData = {
+        nom: nomSociete,
+      };
+      axios
+        .put(`${url}/api/entreprises/${user.entreprise_id}`, formData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          setMessageSucces("Modification réussi !");
+          setShowSpinner(false);
+          setTimeout(() => {
+            setMessageSucces("");
+          }, 5000);
+        })
+        .catch((err) => {
+          console.error(err);
+          setShowSpinner(false);
+        });
+    }
+    if (nomComplet || email || telephone || poste) {
+      let formData = {
+        nom: nomComplet,
+        email: email,
+        telephone: String(telephone),
+        poste: poste,
+      };
+      axios
+        .put(`${url}/api/administrateurs/profile`, formData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          localStorage.setItem(
+            "user",
+            JSON.stringify(response.data.administrateur)
+          );
+          setMessageSucces("Modification réussi !");
+          setShowSpinner(false);
+          setTimeout(() => {
+            setMessageSucces("");
+          }, 5000);
+        })
+        .catch((err) => {
+          console.error(err);
+          setShowSpinner(false);
+        });
+    }
+  }
+
+  function toggleEditing() {
+    if (isEditing) {
+      putInfos();
+    }
+    setIsEditing(!isEditing);
   }
 
   return (
@@ -44,7 +178,8 @@ export default function MyProfil() {
             <div className="mt-2">
               <input
                 type="text"
-                value={nomSociete}
+                value={nomSociete || ""}
+                disabled={!isEditing}
                 onChange={(e) => setnomSociete(e.target.value)}
                 className="pl-3 pr-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none"
               />
@@ -57,7 +192,8 @@ export default function MyProfil() {
             <div className="mt-2">
               <input
                 type="text"
-                value={nomComplet}
+                value={nomComplet || ""}
+                disabled={!isEditing}
                 onChange={(e) => setnomComplet(e.target.value)}
                 className="pl-3 pr-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none"
               />
@@ -70,7 +206,8 @@ export default function MyProfil() {
             <div className="mt-2">
               <input
                 type="email"
-                value={email}
+                value={email || ""}
+                disabled={!isEditing}
                 onChange={(e) => {
                   setEmail(e.target.value);
                   RegexEmail(e.target.value);
@@ -89,7 +226,8 @@ export default function MyProfil() {
             <div className="mt-2">
               <input
                 type="number"
-                value={telephone}
+                value={telephone || ""}
+                disabled={!isEditing}
                 onChange={(e) => setTelephone(e.target.value)}
                 className="pl-3 pr-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none"
               />
@@ -102,7 +240,8 @@ export default function MyProfil() {
             <div className="mt-2">
               <input
                 type="text"
-                value={poste}
+                value={poste || ""}
+                disabled={!isEditing}
                 onChange={(e) => setPoste(e.target.value)}
                 className="pl-3 pr-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none"
               />
@@ -113,7 +252,12 @@ export default function MyProfil() {
               &nbsp;
             </label>
             <div className="mt-2 ">
-              <button onClick={putInfos} className="btnInviter">Modifier</button>
+              <button
+                onClick={toggleEditing}
+                className={isEditing ? "btnEnregistrer" : "btnInviter"}
+              >
+                {isEditing ? "Enregistrer" : "Modifier"}
+              </button>
             </div>
           </div>
         </div>
@@ -130,6 +274,8 @@ export default function MyProfil() {
             <div className="mt-2 relative">
               <input
                 type="text"
+                value={passwordNow}
+                onChange={(e) => setPasswordNow(e.target.value)}
                 className="pl-3 pr-10 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none"
               />
             </div>
@@ -200,7 +346,13 @@ export default function MyProfil() {
               &nbsp;
             </label>
             <div className="mt-2 ">
-              <button className="btnInviter">Modifier</button>
+              <button
+                onClick={putMdp}
+                disabled={showMessageMdpError}
+                className="btnInviter"
+              >
+                Modifier
+              </button>
             </div>
           </div>
         </div>

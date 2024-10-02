@@ -55,10 +55,18 @@
   color: rgba(0, 0, 0, 0.747);
 }
 
-.create {
+.settings {
   position: absolute;
   top: 20px;
   right: 80px;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.747);
+}
+
+.creates {
+  position: absolute;
+  top: 20px;
+  right: 140px;
   cursor: pointer;
   color: rgba(0, 0, 0, 0.747);
 }

@@ -9,16 +9,12 @@ import ConfirmCode from "./component/ConfirmCode";
 import LogoutComponent from "./component/LogoutComponent";
 import DeleteUser from "./component/DeleteUser";
 import CreateProject from "./component/CreateProject";
-import { UrlContext } from "./contexte/useUrl";
 import DeleteProject from "./component/DeleteProject";
 import SetProject from "./component/SetProject";
 import SeRetirer from "./component/SeRetirer";
 import DetailsProject from "./component/DetailsProjet";
-import axios from "axios";
 
 function App() {
-  const { url } = useContext(UrlContext);
-
   const {
     showSpinner,
     showLoginPage,
@@ -32,24 +28,21 @@ function App() {
     showDeleteTask,
     showSetProject,
     showDetails,
-    showSeretirer
+    showSeretirer,
+    setShowAdmin,
   } = useContext(ShowContext);
 
   useEffect(() => {
-    const userString = localStorage.getItem("user");
-    let user = JSON.parse(userString);
-    if (user) {
+    const tokenString = localStorage.getItem("token");
+    let token = JSON.parse(tokenString);
+    if (token) {
+      // setShowAdmin(true);
       setShowMainPage(true);
       setShowLoginPage(false);
+    } else {
+      setShowMainPage(false);
+      setShowLoginPage(true);
     }
-    axios
-      .get(`${url}/projet-dev/app/checksession.php`, {
-        withCredentials: true,
-      })
-      .then((response) => {})
-      .catch((err) => {
-        console.error(err);
-      });
   }, []);
 
   return (

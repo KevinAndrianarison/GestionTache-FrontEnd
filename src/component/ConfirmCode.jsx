@@ -19,7 +19,7 @@ export default function ConfirmCode() {
   const { setMessageSucces, setMessageError } = useContext(MessageContext);
   const { url } = useContext(UrlContext);
 
-  const [codeDeValiation, setCodeDeValidation] = useState(null);
+  const [codeDeValiation, setCodeDeValidation] = useState("");
 
   function closeValideCompte() {
     setShowConfirmMdp(false);
@@ -28,16 +28,16 @@ export default function ConfirmCode() {
   function validateCompte() {
     setShowSpinner(true);
     let formData = {
-      email_user: emailTovalidate,
-      code_verification: codeDeValiation,
+      email : emailTovalidate,
+      verification_code : codeDeValiation,
     };
 
     axios
-      .post(`${url}/projet-dev/app/verification.php`, formData)
+      .post(`${url}/api/verify-email`, formData)
       .then((response) => {
         if (
           response.data.message ===
-          "Le code de vérification est correct. Compte activé."
+          "Email vérifié avec succès"
         ) {
           setMessageSucces("Vérification du compte réussie !");
           setShowSpinner(false);
@@ -50,7 +50,7 @@ export default function ConfirmCode() {
           }, 5000);
         }
         if (
-          response.data.message === "Le code de vérification est incorrect."
+          response.data.message === "Code de vérification incorrect."
         ) {
           setMessageError("Erreur : code incorrect !");
           setShowSpinner(false);
@@ -82,7 +82,7 @@ export default function ConfirmCode() {
         </h1>
         <div className="content">
           <input
-            type="number"
+            type="text"
             onChange={(e) => {
               setCodeDeValidation(e.target.value);
             }}

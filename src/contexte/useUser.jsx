@@ -17,7 +17,7 @@ export function UserContextProvider({ children }) {
   const [emailTovalidate, setEmailTovalidate] = useState("");
   const [poste, setPoste] = useState("");
   const [motDePasse, setMotDePasse] = useState("");
-  const [telephone, setTelephone] = useState(null);
+  const [telephone, setTelephone] = useState("");
   const [statut, setStatut] = useState("");
 
   const changeValue = () => {
