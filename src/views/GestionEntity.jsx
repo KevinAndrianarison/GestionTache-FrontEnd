@@ -6,29 +6,92 @@ import {
   faListUl,
   faCheckDouble,
 } from "@fortawesome/free-solid-svg-icons";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { UrlContext } from "../contexte/useUrl";
 import { MessageContext } from "../contexte/useMessage";
+import { EntityContext } from "../contexte/useEntity";
+import { ShowContext } from "../contexte/useShow";
+import axios from "axios";
 
 export function GestionEntity() {
-  const [companies, setCompanies] = useState([
-    {
-      id: 1,
-      companyName: "Societe A",
-      adminName: "Admin A",
-      email: "adminA@example.com",
-    },
-  ]);
   const [email, setEmail] = useState("");
   const [nomSociete, setNomSociete] = useState("");
   const [nomAdmin, setNomAdmin] = useState("");
+  const [showMessageErrorEmail, setShowMessageErrorEmail] = useState(false);
 
   const { setMessageSucces, setMessageError } = useContext(MessageContext);
   const { url } = useContext(UrlContext);
+  const { setShowSpinner, setShowDeleteEntity } = useContext(ShowContext);
+  const { setNomEntity, setIdEntity, getListeEntity, ListeSociete } =
+    useContext(EntityContext);
+
+  function deleteEntity(nom, id) {
+    setNomEntity(nom);
+    setIdEntity(id);
+    setShowDeleteEntity(true);
+  }
+
+  useEffect(() => {
+    getListeEntity();
+  }, []);
 
   function createSociete() {
-    console.log(email, nomSociete, nomAdmin);
+    setShowSpinner(true);
+    const tokenString = localStorage.getItem("token");
+    let token = JSON.parse(tokenString);
+    let formData = {
+      nom: nomSociete,
+    };
+    axios
+      .post(`${url}/api/entreprises`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setNomSociete("");
+        let formData = {
+          nom: nomAdmin,
+          email: email,
+          entreprise_id: response.data.entreprise_id,
+        };
+        axios
+          .post(`${url}/api/register`, formData, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+          .then((response) => {
+            setNomAdmin("");
+            setEmail("");
+            setMessageSucces("Le compte a été créé avec succès !");
+            setShowSpinner(false);
+            getListeEntity();
+            setTimeout(() => {
+              setMessageSucces("");
+            }, 5000);
+          })
+          .catch((err) => {
+            setMessageError(err.response.data.message);
+            setShowSpinner(false);
+            setTimeout(() => {
+              setMessageError("");
+            }, 5000);
+          });
+      })
+      .catch((err) => {
+        console.error(err);
+        setShowSpinner(false);
+      });
+  }
+
+  function RegexEmail(email) {
+    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    setShowMessageErrorEmail(!regex.test(email));
+    if (email === "") {
+      setShowMessageErrorEmail(false);
+    }
   }
 
   return (
@@ -45,7 +108,7 @@ export function GestionEntity() {
               <FontAwesomeIcon icon={faPlus} className="mr-2" />
               Ajouter une société
             </h2>
-            <form className="space-y-4">
+            <div className="space-y-4 mt-5">
               <div>
                 <label className="block font-medium mb-1">
                   Nom de la société
@@ -73,19 +136,29 @@ export function GestionEntity() {
                 <input
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    RegexEmail(e.target.value);
+                  }}
                   className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
                   placeholder="admin@example.com"
                 />
+                {showMessageErrorEmail && (
+                  <p className="errEmail">Adresse email invalide</p>
+                )}
               </div>
+
               <button
                 onClick={createSociete}
+                disabled={
+                  !nomSociete || !nomAdmin || !email || showMessageErrorEmail
+                }
                 className="w-52 bg-blue-500 text-white py-2 rounded-md duration-300"
               >
                 <FontAwesomeIcon icon={faCheckDouble} className="mr-2" />
                 Ajouter
               </button>
-            </form>
+            </div>
           </div>
 
           <div className="right mt-10 p-6 border rounded-lg shadow-lg">
@@ -100,22 +173,24 @@ export function GestionEntity() {
               <li className="trash mr-3"></li>
             </div>
             <div className="contentListSociete text-sm">
-              <div className="pl-5 pt-2 border  pb-2 listeSociete">
-                <li className="nomSociete">Nom de la société</li>
-                <li className="nomAdmin">Nom de l'admin</li>
-                <li className="AdresseEmail">Adresse email</li>
-                <li className="trash">
-                  <FontAwesomeIcon icon={faTrash} className="faTrash mr-2" />
-                </li>
-              </div>
-              <div className="pl-5 pt-2 border  pb-2 listeSociete">
-                <li className="nomSociete">Nom de la société</li>
-                <li className="nomAdmin">Nom de l'admin</li>
-                <li className="AdresseEmail">Adresse email</li>
-                <li className="trash">
-                  <FontAwesomeIcon icon={faTrash} className="faTrash mr-2" />
-                </li>
-              </div>
+              {ListeSociete.map((list) => (
+                <div
+                  key={list.id}
+                  className="pl-5 pt-2 border  pb-2 listeSociete"
+                >
+                  <li className="nomSociete">{list.nom}</li>
+                  <li className="nomAdmin">{list.administrateurs[0].nom}</li>
+                  <li className="AdresseEmail">{list.administrateurs[0].email}</li>
+                  <li
+                    className="trash"
+                    onClick={() => {
+                      deleteEntity(list.nom, list.id);
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faTrash} className="faTrash mr-2" />
+                  </li>
+                </div>
+              ))}
             </div>
           </div>
         </div>

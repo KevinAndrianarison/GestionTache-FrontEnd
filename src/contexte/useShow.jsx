@@ -5,7 +5,6 @@ export const ShowContext = createContext({
   showMainPage: false,
   showLoginPage: false,
   showLoginComponent: true,
-  showSignUpComponent: false,
   showConfirmMdp: false,
   showLogout: false,
   showDeleteUser: false,
@@ -15,8 +14,7 @@ export const ShowContext = createContext({
   showSeretirer: false,
   showDetails: false,
   showAdmin: false,
-
-
+  showDeleteEntity: false,
 
 });
 
@@ -24,21 +22,17 @@ export function ShowContextProvider({ children }) {
   const [showSpinner, setShowSpinner] = useState(false);
   const [showLoginPage, setShowLoginPage] = useState(false);
   const [showLoginComponent, setShowLoginComponent] = useState(true);
-  const [showSignUpComponent, setShowSignUpComponent] = useState(false);
   const [showMainPage, setShowMainPage] = useState(false);
   const [showConfirmMdp, setShowConfirmMdp] = useState(false);
   const [showLogout, setShowLogout] = useState(false);
   const [showDeleteUser, setShowDeleteUser] = useState(false);
+  const [showDeleteEntity, setShowDeleteEntity] = useState(false);
   const [showcreateTask, setShowcreateTask] = useState(false);
   const [showDeleteTask, setShowDeleteTask] = useState(false);
   const [showSetProject, setShowSetProject] = useState(false);
   const [showSeretirer, setShowSeretirer] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [showAdmin, setShowAdmin] = useState(false);
-
-
-
-
 
   return (
     <ShowContext.Provider
@@ -47,7 +41,6 @@ export function ShowContextProvider({ children }) {
         showLoginPage,
         showMainPage,
         showLoginComponent,
-        showSignUpComponent,
         showConfirmMdp,
         showLogout,
         showDeleteUser,
@@ -57,20 +50,21 @@ export function ShowContextProvider({ children }) {
         showSeretirer,
         showDetails,
         showAdmin,
+        showDeleteEntity,
         setShowLoginComponent,
         setShowcreateTask,
         setShowConfirmMdp,
         setShowMainPage,
         setShowLoginPage,
         setShowSpinner,
-        setShowSignUpComponent,
         setShowLogout,
         setShowDeleteUser,
         setShowDeleteTask,
         setShowSetProject,
         setShowSeretirer,
         setShowDetails,
-        setShowAdmin
+        setShowAdmin,
+        setShowDeleteEntity
       }}
     >
       {children}

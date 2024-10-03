@@ -1,5 +1,6 @@
 .faTrash {
   color: rgba(255, 0, 0, 0.671);
+  cursor: pointer;
 }
 
 .left {
@@ -8,6 +9,7 @@
 
 .right {
   width: 50vw;
+  height: 450px;
 }
 
 .flexsuper {
@@ -32,11 +34,7 @@
   }
   .nomSociete,
   .nomAdmin {
-    width: 40%;
-  }
-  .trash {
-    width: 5%;
-    text-align: center;
+    font-size: 12px;
   }
 }
 
@@ -47,16 +45,19 @@
 }
 
 .nomSociete,
-.nomAdmin,
+.nomAdmin {
+  width: 20%;
+}
+
 .AdresseEmail {
-  width: 30%;
+  width: 40%;
 }
 
 .trash {
-  width: 10%;
+  width: 5%;
 }
 
 .contentListSociete {
   overflow-y: scroll;
-  max-height: 80%;
+  height: 75%;
 }

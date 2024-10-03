@@ -3,14 +3,21 @@ import "../styles/GestionUserPage.css";
 import { faTrash, faList, faGrip } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ShowContext } from "../contexte/useShow";
+import { UrlContext } from "../contexte/useUrl";
+import { MessageContext } from "../contexte/useMessage";
+
+import axios from "axios";
 
 export default function GestionUserPage() {
   const [email, setEmail] = useState("");
+  const [nom, setNom] = useState("");
   const [showMessageErrorEmail, setShowMessageErrorEmail] = useState(false);
   const [showList, setShowList] = useState(false);
   const [showGrid, setShowGrid] = useState(true);
 
-  const { setShowDeleteUser } = useContext(ShowContext);
+  const { setShowDeleteUser, setShowSpinner } = useContext(ShowContext);
+  const { url } = useContext(UrlContext);
+  const { setMessageSucces, setMessageError } = useContext(MessageContext);
 
   function switchToGrid() {
     setShowList(false);
@@ -26,6 +33,38 @@ export default function GestionUserPage() {
     setShowList(true);
   }
 
+  function inviterMembre() {
+    setShowSpinner(true);
+    const tokenString = localStorage.getItem("token");
+    let token = JSON.parse(tokenString);
+    const userString = localStorage.getItem("user");
+    let user = JSON.parse(userString);
+    let formData = {
+      nom: nom,
+      email: email,
+      entreprise_id: user.entreprise_id,
+    };
+    axios
+      .post(`${url}/api/invitation`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setMessageSucces(response.data.message);
+        setEmail("");
+        setNom("");
+        setShowSpinner(false);
+        setTimeout(() => {
+          setMessageSucces("");
+        }, 5000);
+      })
+      .catch((err) => {
+        console.error(err);
+        setShowSpinner(false);
+      });
+  }
+
   function RegexEmail(email) {
     const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     setShowMessageErrorEmail(!regex.test(email));
@@ -38,6 +77,21 @@ export default function GestionUserPage() {
     <div className="formulaireAddUsers">
       <h1 className="titreFormddUser">Inviter une personne :</h1>
       <div className="formContent flex mt-5">
+        <div className="sm:col-span-3 w-60 mr-5">
+          <label className="block text-sm font-medium leading-6 text-gray-900">
+            Nom complet
+          </label>
+          <div className="mt-2">
+            <input
+              type="text"
+              value={nom}
+              onChange={(e) => {
+                setNom(e.target.value);
+              }}
+              className="pl-3 pr-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none"
+            />
+          </div>
+        </div>
         <div className="sm:col-span-3 w-60 mr-5">
           <label className="block text-sm font-medium leading-6 text-gray-900">
             Adresse email
@@ -63,7 +117,13 @@ export default function GestionUserPage() {
             &nbsp;
           </label>
           <div className="mt-2 divBtnInviter">
-            <button className="btnInviter">Inviter</button>
+            <button
+              disabled={!email || !nom || showMessageErrorEmail}
+              className="btnInviter"
+              onClick={inviterMembre}
+            >
+              Inviter
+            </button>
           </div>
         </div>
       </div>

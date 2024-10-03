@@ -6,6 +6,7 @@ import { MessageContext } from "../contexte/useMessage";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginComponent() {
   const [email, setEmail] = useState("");
@@ -13,20 +14,10 @@ export default function LoginComponent() {
   const [showPassword, setShowPassword] = useState(false);
 
   const { url } = useContext(UrlContext);
-  const { setMessageSucces, setMessageError } = useContext(MessageContext);
-  const {
-    setShowLoginComponent,
-    setShowSignUpComponent,
-    setShowSpinner,
-    setShowLoginPage,
-    setShowMainPage,
-    setShowAdmin,
-  } = useContext(ShowContext);
-
-  function showSignUpComponent() {
-    setShowLoginComponent(false);
-    setShowSignUpComponent(true);
-  }
+  const { setMessageError } = useContext(MessageContext);
+  const { setShowSpinner, setShowLoginPage, setShowMainPage, setShowAdmin } =
+    useContext(ShowContext);
+  const navigate = useNavigate();
 
   function loginFunction() {
     setShowSpinner(true);
@@ -46,11 +37,19 @@ export default function LoginComponent() {
             JSON.stringify(response.data.administrateur)
           );
           localStorage.setItem("token", JSON.stringify(response.data.token));
+          localStorage.setItem("role", JSON.stringify(response.data.rôle));
           setShowLoginPage(false);
-          setShowAdmin(true);
-          setShowMainPage(true);
+          if (response.data.rôle === "adminSuper") {
+            setShowAdmin(false);
+            navigate("/gestionEntity");
+            setShowMainPage(true);
+          }
+          if (response.data.rôle === "admin") {
+            setShowAdmin(true);
+            setShowMainPage(true);
+          }
+          setShowSpinner(false);
         }
-        setShowSpinner(false);
       })
       .catch((err) => {
         console.error(err);
@@ -104,13 +103,7 @@ export default function LoginComponent() {
           </button>
         </div>
         <div className="forgot mt-2">Mot de passe oubié ?</div>
-        <div className="signup mt-5">
-          <p className="new">Vous êtes nouveau ?</p>
-          <p onClick={showSignUpComponent} className="signIn">
-            {" "}
-            Inscrivez-vous !
-          </p>
-        </div>
+        <div className="signup mt-5"></div>
       </div>
     </>
   );

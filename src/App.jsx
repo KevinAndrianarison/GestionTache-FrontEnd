@@ -13,6 +13,8 @@ import DeleteProject from "./component/DeleteProject";
 import SetProject from "./component/SetProject";
 import SeRetirer from "./component/SeRetirer";
 import DetailsProject from "./component/DetailsProjet";
+import DeleteEntity from "./component/DeleteEntity";
+import { useNavigate } from "react-router-dom";
 
 function App() {
   const {
@@ -30,15 +32,27 @@ function App() {
     showDetails,
     showSeretirer,
     setShowAdmin,
+    showDeleteEntity,
   } = useContext(ShowContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const tokenString = localStorage.getItem("token");
+    const roleString = localStorage.getItem("role");
     let token = JSON.parse(tokenString);
+    let role = JSON.parse(roleString);
+
     if (token) {
-      // setShowAdmin(true);
-      setShowMainPage(true);
-      setShowLoginPage(false);
+      if (role === "adminSuper") {
+        navigate("/gestionEntity");
+        setShowAdmin(false);
+        setShowMainPage(true);
+        setShowLoginPage(false);
+      }
+      if (role === "admin") {
+        setShowAdmin(true);
+        setShowMainPage(true);
+      }
     } else {
       setShowMainPage(false);
       setShowLoginPage(true);
@@ -58,6 +72,7 @@ function App() {
       {showSetProject && <SetProject />}
       {showSeretirer && <SeRetirer />}
       {showDetails && <DetailsProject />}
+      {showDeleteEntity && <DeleteEntity />}
 
       <AlertComponent />
     </div>

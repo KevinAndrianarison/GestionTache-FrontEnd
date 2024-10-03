@@ -6,6 +6,7 @@ import axios from "axios";
 import { UrlContext } from "../contexte/useUrl";
 
 
+
 export default function LogoutComponent() {
   const {
     setShowLogout,
@@ -39,6 +40,7 @@ export default function LogoutComponent() {
       .then((response) => {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
+        localStorage.removeItem("role");
         setShowLogout(false);
         setShowMainPage(false);
         setShowLoginComponent(true);
