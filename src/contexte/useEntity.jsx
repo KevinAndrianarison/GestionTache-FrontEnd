@@ -25,7 +25,6 @@ export function EntityContextProvider({ children }) {
       })
       .then((response) => {
         setListeSociete(response.data.entreprises);
-        console.log(response.data.entreprises);
       })
       .catch((err) => {
         console.error(err);

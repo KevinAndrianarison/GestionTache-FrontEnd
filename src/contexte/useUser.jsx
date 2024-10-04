@@ -1,46 +1,46 @@
-import { createContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
+import { UrlContext } from "../contexte/useUrl";
+import axios from "axios";
 
 export const UserContext = createContext({
-  nomComplet: "",
-  email: "",
-  emailTovalidate: "",
-  motDePasse: "",
-  poste: "",
-  telephone: null,
-  statut: "",
-  changeValue: () => {},
+  ListeUser: [],
+  iduser: "",
 });
 
 export function UserContextProvider({ children }) {
-  const [nomComplet, setNomComplet] = useState("");
-  const [email, setEmail] = useState("");
-  const [emailTovalidate, setEmailTovalidate] = useState("");
-  const [poste, setPoste] = useState("");
-  const [motDePasse, setMotDePasse] = useState("");
-  const [telephone, setTelephone] = useState("");
-  const [statut, setStatut] = useState("");
+  const [ListeUser, setListeUser] = useState([]);
+  const [iduser, setIduser] = useState("");
 
-  const changeValue = () => {
-    setNomComplet("Steeve");
-    setEmail("Steeve@123");
-    setMotDePasse("123");
-    setPoste("Directeur");
-    setTelephone(5555);
-    setStatut("user");
-  };
+  const { url } = useContext(UrlContext);
+
+  function getAllUser() {
+    setListeUser([]);
+    const tokenString = localStorage.getItem("token");
+    let token = JSON.parse(tokenString);
+    const userString = localStorage.getItem("user");
+    let user = JSON.parse(userString);
+    axios
+      .get(`${url}/api/entreprises/${user.entreprise_id}/employes`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setListeUser(response.data.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }
 
   return (
     <UserContext.Provider
       value={{
-        nomComplet,
-        email,
-        poste,
-        motDePasse,
-        telephone,
-        statut,
-        emailTovalidate,
-        setEmailTovalidate,
-        changeValue,
+        ListeUser,
+        iduser,
+        getAllUser,
+        setListeUser,
+        setIduser,
       }}
     >
       {children}

@@ -15,8 +15,13 @@ export default function LoginComponent() {
 
   const { url } = useContext(UrlContext);
   const { setMessageError } = useContext(MessageContext);
-  const { setShowSpinner, setShowLoginPage, setShowMainPage, setShowAdmin } =
-    useContext(ShowContext);
+  const {
+    setShowSpinner,
+    setShowLoginPage,
+    setShowMainPage,
+    setShowAdmin,
+    setUser,
+  } = useContext(ShowContext);
   const navigate = useNavigate();
 
   function loginFunction() {
@@ -34,7 +39,11 @@ export default function LoginComponent() {
         if (response.data.message === "Connexion réussie") {
           localStorage.setItem(
             "user",
-            JSON.stringify(response.data.administrateur)
+            JSON.stringify(response.data.utilisateur)
+          );
+          localStorage.setItem(
+            "entity",
+            JSON.stringify(response.data.nom_entreprise)
           );
           localStorage.setItem("token", JSON.stringify(response.data.token));
           localStorage.setItem("role", JSON.stringify(response.data.rôle));
@@ -46,6 +55,11 @@ export default function LoginComponent() {
           }
           if (response.data.rôle === "admin") {
             setShowAdmin(true);
+            setShowMainPage(true);
+          }
+          if (response.data.rôle === "employe") {
+            setShowAdmin(false);
+            setUser(true);
             setShowMainPage(true);
           }
           setShowSpinner(false);

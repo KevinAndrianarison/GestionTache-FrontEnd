@@ -1,10 +1,11 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import "../styles/GestionUserPage.css";
 import { faTrash, faList, faGrip } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ShowContext } from "../contexte/useShow";
 import { UrlContext } from "../contexte/useUrl";
 import { MessageContext } from "../contexte/useMessage";
+import { UserContext } from "../contexte/useUser";
 
 import axios from "axios";
 
@@ -17,6 +18,7 @@ export default function GestionUserPage() {
 
   const { setShowDeleteUser, setShowSpinner } = useContext(ShowContext);
   const { url } = useContext(UrlContext);
+  const { getAllUser, ListeUser, setIduser } = useContext(UserContext);
   const { setMessageSucces, setMessageError } = useContext(MessageContext);
 
   function switchToGrid() {
@@ -24,7 +26,8 @@ export default function GestionUserPage() {
     setShowGrid(true);
   }
 
-  function deleteuser() {
+  function deleteuser(id) {
+    setIduser(id);
     setShowDeleteUser(true);
   }
 
@@ -32,6 +35,10 @@ export default function GestionUserPage() {
     setShowGrid(false);
     setShowList(true);
   }
+
+  useEffect(() => {
+    getAllUser();
+  }, []);
 
   function inviterMembre() {
     setShowSpinner(true);
@@ -54,6 +61,7 @@ export default function GestionUserPage() {
         setMessageSucces(response.data.message);
         setEmail("");
         setNom("");
+        getAllUser();
         setShowSpinner(false);
         setTimeout(() => {
           setMessageSucces("");
@@ -128,7 +136,7 @@ export default function GestionUserPage() {
         </div>
       </div>
       <div className="listUser mt-5">
-        <h1 className="titleList">Liste des membres (0)</h1>
+        <h1 className="titleList">Liste des membres ({ListeUser.length})</h1>
         <div className="showDisplay">
           <div
             onClick={switchToList}
@@ -147,26 +155,30 @@ export default function GestionUserPage() {
         </div>
         {showGrid && (
           <div className="ListMembresGrid mt-4">
-            <div className="OneMembre mt-2 mr-10">
-              <div className="photouser"></div>
-              <div className="infosuser">
-                <div>
-                  <h1>ANDRIANARISON Steeve Kevin</h1>
-                  <p className="poste">Développeur web</p>
+            {ListeUser.map((list) => (
+              <div key={list.id} className="OneMembre mt-2 mr-10">
+                <div className="photouser"></div>
+                <div className="infosuser">
+                  <div>
+                    <h1>{list.nom}</h1>
+                    <p className="poste">{list.poste}</p>
+                  </div>
+                  <div className="adresse">{list.telephone}</div>
+                  <div className="email">
+                    <p>{list.email}</p>
+                  </div>
                 </div>
-                <div className="adresse">Madagascar, Antsiranana</div>
-                <div className="email">
-                  <p>steeve@gmail.com</p>
+                <div className="deleteuser">
+                  <FontAwesomeIcon
+                    onClick={() => {
+                      deleteuser(list.id);
+                    }}
+                    icon={faTrash}
+                    className="mb-2 faTrash"
+                  />
                 </div>
               </div>
-              <div className="deleteuser">
-                <FontAwesomeIcon
-                  onClick={deleteuser}
-                  icon={faTrash}
-                  className="mb-2 faTrash"
-                />
-              </div>
-            </div>
+            ))}
           </div>
         )}
         {showList && (
@@ -178,18 +190,22 @@ export default function GestionUserPage() {
               <li className="deleteList"></li>
             </div>
             <div className="bodyValue">
-              <div className="BodyList">
-                <li className="nomList">ANDRIANARISON Steeve Kevin</li>
-                <li className="adresseList">steeve@gmail.com</li>
-                <li className="posteList">Stagiaire</li>
-                <li className="deleteList deleteuser">
-                  <FontAwesomeIcon
-                    onClick={deleteuser}
-                    icon={faTrash}
-                    className="mb-2 faTrash"
-                  />
-                </li>
-              </div>
+              {ListeUser.map((list) => (
+                <div key={list.id} className="BodyList">
+                  <li className="nomList">{list.nom}</li>
+                  <li className="adresseList">{list.telephone}</li>
+                  <li className="posteList">{list.poste}</li>
+                  <li className="deleteList deleteuser">
+                    <FontAwesomeIcon
+                      onClick={() => {
+                        deleteuser(list.id);
+                      }}
+                      icon={faTrash}
+                      className="mb-2 faTrash"
+                    />
+                  </li>
+                </div>
+              ))}
             </div>
           </div>
         )}

@@ -24,7 +24,7 @@ export default function MyProfil() {
 
   const { url } = useContext(UrlContext);
   const { setMessageSucces, setMessageError } = useContext(MessageContext);
-  const { setShowSpinner } = useContext(ShowContext);
+  const { setShowSpinner, showAdmin } = useContext(ShowContext);
 
   function RegexEmail(email) {
     const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -65,13 +65,24 @@ export default function MyProfil() {
     setShowSpinner(true);
     const tokenString = localStorage.getItem("token");
     let token = JSON.parse(tokenString);
+    const roleString = localStorage.getItem("role");
+    let role = JSON.parse(roleString);
+
+    let APIname;
+
+    if (role === "admin") {
+      APIname = "api/administrateurs/change-password";
+    }
+    if (role === "employe") {
+      APIname = "api/employes/change-password";
+    }
 
     let formdata = {
       ancien_mot_de_passe: passwordNow,
       nouveau_mot_de_passe: passwordVerify,
     };
     axios
-      .post(`${url}/api/administrateurs/change-password`, formdata, {
+      .post(`${url}/${APIname}`, formdata, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -101,9 +112,11 @@ export default function MyProfil() {
     const tokenString = localStorage.getItem("token");
     let user = JSON.parse(userString);
     let token = JSON.parse(tokenString);
+    const roleString = localStorage.getItem("role");
+    let role = JSON.parse(roleString);
 
     setShowSpinner(true);
-    if (nomSociete) {
+    if (nomSociete && role === "admin") {
       let formData = {
         nom: nomSociete,
       };
@@ -114,6 +127,10 @@ export default function MyProfil() {
           },
         })
         .then((response) => {
+          localStorage.setItem(
+            "entity",
+            JSON.stringify(response.data.entreprise.nom)
+          );
           setMessageSucces("Modification réussi !");
           setShowSpinner(false);
           setTimeout(() => {
@@ -126,6 +143,15 @@ export default function MyProfil() {
         });
     }
     if (nomComplet || email || telephone || poste) {
+      let APIname;
+
+      if (role === "admin") {
+        APIname = "api/administrateurs/profile";
+      }
+      if (role === "employe") {
+        APIname = "api/employes/profile";
+      }
+
       let formData = {
         nom: nomComplet,
         email: email,
@@ -133,7 +159,7 @@ export default function MyProfil() {
         poste: poste,
       };
       axios
-        .put(`${url}/api/administrateurs/profile`, formData, {
+        .put(`${url}/${APIname}`, formData, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -171,20 +197,23 @@ export default function MyProfil() {
           Ajouter ou modifier vos informations personnelles
         </h1>
         <div className="informationsForm mt-5">
-          <div className="sm:col-span-3 w-60 mr-5">
-            <label className="block text-sm font-bold leading-6 text-gray-900">
-              Nom de la société
-            </label>
-            <div className="mt-2">
-              <input
-                type="text"
-                value={nomSociete || ""}
-                disabled={!isEditing}
-                onChange={(e) => setnomSociete(e.target.value)}
-                className="pl-3 pr-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none"
-              />
+          {showAdmin && (
+            <div className="sm:col-span-3 w-60 mr-5">
+              <label className="block text-sm font-bold leading-6 text-gray-900">
+                Nom de la société
+              </label>
+              <div className="mt-2">
+                <input
+                  type="text"
+                  value={nomSociete || ""}
+                  disabled={!isEditing}
+                  onChange={(e) => setnomSociete(e.target.value)}
+                  className="pl-3 pr-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none"
+                />
+              </div>
             </div>
-          </div>
+          )}
+
           <div className="sm:col-span-3 w-60 mr-5">
             <label className="block text-sm font-bold leading-6 text-gray-900">
               Votre nom complet

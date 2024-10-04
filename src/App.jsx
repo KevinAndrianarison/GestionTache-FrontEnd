@@ -14,7 +14,9 @@ import SetProject from "./component/SetProject";
 import SeRetirer from "./component/SeRetirer";
 import DetailsProject from "./component/DetailsProjet";
 import DeleteEntity from "./component/DeleteEntity";
+import { UserContext } from "./contexte/useUser";
 import { useNavigate } from "react-router-dom";
+
 
 function App() {
   const {
@@ -33,7 +35,9 @@ function App() {
     showSeretirer,
     setShowAdmin,
     showDeleteEntity,
+    setUser,
   } = useContext(ShowContext);
+  const { getAllUser } = useContext(UserContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -53,10 +57,17 @@ function App() {
         setShowAdmin(true);
         setShowMainPage(true);
       }
+      if (role === "employe") {
+        setShowAdmin(false);
+        setUser(true);
+        setShowMainPage(true);
+      }
     } else {
       setShowMainPage(false);
       setShowLoginPage(true);
     }
+    getAllUser()
+
   }, []);
 
   return (
