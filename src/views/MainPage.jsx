@@ -9,7 +9,6 @@ import {
   faGear,
 } from "@fortawesome/free-solid-svg-icons";
 import AllprojectPage from "./AllprojectPage";
-import CreateprojectPage from "./CreateprojectPage";
 import GestionUserPage from "./GestionUserPage";
 import { GestionEntity } from "./GestionEntity";
 import MyProfil from "./MyProfil";
@@ -39,19 +38,21 @@ export default function MainPage() {
       <div className="header">
         <div className="logos"></div>
         {(showAdmin || showUser) && (
-          <Tippy content="Créer un projet">
-            <FontAwesomeIcon
-              onClick={createProject}
-              icon={faPlusCircle}
-              className="creates  w-8 h-8"
-            />
-          </Tippy>
+          <>
+            <Tippy content="Créer un projet">
+              <FontAwesomeIcon
+                onClick={createProject}
+                icon={faPlusCircle}
+                className="creates  w-8 h-8"
+              />
+            </Tippy>
+            <NavLink to={`${entity}/Settings`}>
+              <Tippy content="Paramètres">
+                <FontAwesomeIcon icon={faGear} className="settings  w-8 h-8" />
+              </Tippy>
+            </NavLink>
+          </>
         )}
-        <NavLink to={`${entity}/Settings`}>
-          <Tippy content="Paramètres">
-            <FontAwesomeIcon icon={faGear} className="settings  w-8 h-8" />
-          </Tippy>
-        </NavLink>
 
         <FontAwesomeIcon
           onClick={logout}
@@ -108,7 +109,7 @@ export default function MainPage() {
                     }
                   >
                     <FontAwesomeIcon icon={faUserPlus} className="mr-2" />
-                    Ajouter un nouveau membre
+                    Ajouter un nouveau employé
                   </NavLink>
                 </li>
               )}
@@ -121,10 +122,6 @@ export default function MainPage() {
               <>
                 <Route path="/" element={<AllprojectPage />} />
                 <Route path=":entity/MyProject" element={<MyprojectPage />} />
-                <Route
-                  path=":entity/createProject"
-                  element={<CreateprojectPage />}
-                />
                 {showAdmin && (
                   <Route path=":entity/AddUser" element={<GestionUserPage />} />
                 )}

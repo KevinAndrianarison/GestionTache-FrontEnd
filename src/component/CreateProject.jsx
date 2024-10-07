@@ -4,18 +4,30 @@ import {
   faXmark,
   faClock,
   faPlus,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { ShowContext } from "../contexte/useShow";
 import { useContext, useState } from "react";
 import { UserContext } from "../contexte/useUser";
+import { UrlContext } from "../contexte/useUrl";
+import { MessageContext } from "../contexte/useMessage";
+import axios from "axios";
 
 export default function CreateProject() {
-  const { setShowcreateTask } = useContext(ShowContext);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedMembers, setSelectedMembers] = useState([]);
+  const [userIds, setUserIds] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [inputFields, setInputFields] = useState([]);
+  const [titreProjet, setTitreProjet] = useState("");
+  const [description, setDescription] = useState("");
+  const [dateDebut, setDateDebut] = useState("");
+  const [dateFin, setDateFin] = useState("");
 
   const { ListeUser } = useContext(UserContext);
+  const { url } = useContext(UrlContext);
+  const { setShowcreateTask, setShowSpinner } = useContext(ShowContext);
+  const { setMessageSucces, setMessageError } = useContext(MessageContext);
 
   function closeCreateProject() {
     setShowcreateTask(false);
@@ -34,6 +46,7 @@ export default function CreateProject() {
   function handleOptionSelect(option) {
     if (!selectedMembers.includes(option)) {
       setSelectedMembers([...selectedMembers, option]);
+      setUserIds([...userIds, option.id]);
     }
     setSearchTerm("");
     setIsDropdownOpen(false);
@@ -41,6 +54,66 @@ export default function CreateProject() {
 
   function handleRemoveMember(member) {
     setSelectedMembers(selectedMembers.filter((m) => m !== member));
+    setUserIds(userIds.filter((id) => id !== member.id));
+  }
+
+  function addInputField() {
+    setInputFields([...inputFields, ""]);
+  }
+
+  function handleInputChange(index, event) {
+    const values = [...inputFields];
+    values[index] = event.target.value;
+    setInputFields(values);
+  }
+
+  function removeInputField(index) {
+    const values = [...inputFields];
+    values.splice(index, 1);
+    setInputFields(values);
+  }
+
+  function createProjet() {
+    setShowSpinner(true);
+    let chefsId = [];
+    const tokenString = localStorage.getItem("token");
+    let token = JSON.parse(tokenString);
+    const userString = localStorage.getItem("user");
+    let user = JSON.parse(userString);
+    chefsId.push(user.id);
+
+    let formData = {
+      titre: titreProjet,
+      description: description,
+      entreprise_id: user.entreprise_id,
+      date_debut: dateDebut,
+      date_fin: dateFin,
+      chefs: chefsId,
+      membres: userIds,
+    };
+
+    axios
+      .post(`${url}/api/projets`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setTitreProjet("");
+        setDescription("");
+        setDateDebut("");
+        setDateFin("");
+        setMessageSucces(response.data.message);
+        setShowcreateTask(false);
+        setShowSpinner(false);
+        setTimeout(() => {
+          setMessageSucces("");
+        }, 5000);
+      })
+      .catch((err) => {
+        console.error(err);
+        setShowSpinner(false);
+      });
   }
 
   return (
@@ -57,8 +130,10 @@ export default function CreateProject() {
             <div className="titreTask">
               <input
                 type="text"
+                value={titreProjet}
+                onChange={(e) => setTitreProjet(e.target.value)}
                 placeholder="Titre du projet"
-                className="pl-3 pr-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none"
+                className="input pl-3 pr-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none"
               />
             </div>
             <div className="close">
@@ -71,35 +146,43 @@ export default function CreateProject() {
           </div>
 
           <div className="section mt-5">
-            <div className="dateInputs flex flex-wrap justify-between">
-              <div className="inputGroup mr-4 w-60 mt-5">
-                <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
+            <div className="dateInputs w-full flex justify-between flex-wrap">
+              <div className="inputGroup w-60 mb-5">
+                <label className="input flex items-center font-medium text-gray-700 mb-1">
                   <FontAwesomeIcon icon={faClock} className="w-4 h-4 mr-2" />
                   Date de début
                 </label>
                 <input
                   type="date"
-                  className="pl-3 pr-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none"
+                  value={dateDebut}
+                  onChange={(e) => setDateDebut(e.target.value)}
+                  className="input pl-3 pr-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none"
                 />
               </div>
 
-              <div className="inputGroup w-60 mt-5">
-                <label className="flex items-center text-sm font-medium text-gray-700 mb-1">
+              <div className="inputGroup w-60 mb-5">
+                <label className="input flex items-center font-medium text-gray-700 mb-1">
                   <FontAwesomeIcon icon={faClock} className="w-4 h-4 mr-2" />
                   Date de fin
                 </label>
                 <input
                   type="date"
-                  className="pl-3 pr-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none"
+                  value={dateFin}
+                  onChange={(e) => setDateFin(e.target.value)}
+                  className="input pl-3 pr-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none"
                 />
               </div>
             </div>
           </div>
 
-          <div className="label mt-5">Description :</div>
+          <div className="label mt-2">Description :</div>
 
           <div className="section mt-2">
-            <textarea className="pl-3 w-52 pr-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none" />
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="input pl-3 w-52 pr-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none"
+            />
           </div>
 
           <div className="section mt-5 flex items-center">
@@ -110,14 +193,14 @@ export default function CreateProject() {
                 <input
                   type="text"
                   placeholder="Rechercher..."
-                  className="pl-3 pr-10 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none"
+                  className="input pl-3 pr-10 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none"
                   value={searchTerm}
                   onChange={handleSearchChange}
                 />
                 <FontAwesomeIcon
                   icon={faPlus}
                   className="absolute right-3 text-gray-400 cursor-pointer transition duration-200 hover:text-[rgba(0, 184, 148,1.0)] hover:scale-125"
-                  onClick={() => handleOptionSelect(searchTerm)}
+                  onClick={() => handleOptionSelect({ email: searchTerm })}
                 />
               </div>
 
@@ -128,7 +211,7 @@ export default function CreateProject() {
                       <div
                         key={index}
                         className="px-4 py-2 text-sm cursor-pointer hover:bg-gray-200"
-                        onClick={() => handleOptionSelect(user.email)}
+                        onClick={() => handleOptionSelect(user)}
                       >
                         {user.email}
                       </div>
@@ -144,25 +227,58 @@ export default function CreateProject() {
           </div>
 
           {selectedMembers.length > 0 && (
-            <div className="mt-5 flex flex-wrap gap-2">
-              {selectedMembers.map((member, index) => (
-                <div
-                  key={index}
-                  className="flex items-center bg-gray-200 rounded-full px-3 py-1"
-                >
-                  {member}
-                  <FontAwesomeIcon
-                    icon={faXmark}
-                    className="ml-2 cursor-pointer text-red-500 hover:text-red-700"
-                    onClick={() => handleRemoveMember(member)}
-                  />
-                </div>
-              ))}
+            <div className="mt-5 ">
+              <div className="flex flex-wrap wrap justify-between">
+                {selectedMembers.map((member, index) => (
+                  <div
+                    key={index}
+                    className=" w-60 mt-2 bg-gray-200 rounded-md px-4 py-2 flex justify-between items-center"
+                  >
+                    {member.email}
+                    <FontAwesomeIcon
+                      icon={faXmark}
+                      className="cursor-pointer text-red-500 hover:text-red-700"
+                      onClick={() => handleRemoveMember(member)}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
+          <div className="section mt-5">
+            <div className="label">Ajouter des champs d'input :</div>
+            <div className="sections mt-2">
+              {inputFields.map((input, index) => (
+                <div key={index} className="w-full relative mt-2">
+                  <input
+                    type="text"
+                    placeholder={`Champ d'input ${index + 1}`}
+                    className="input pl-3 pr-10 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none"
+                    value={input}
+                    onChange={(e) => handleInputChange(index, e)}
+                  />
+                  <FontAwesomeIcon
+                    icon={faTrash}
+                    className="faTrashIcon absolute right-3 top-1/2 transform -translate-y-1/2 text-red-500 cursor-pointer hover:text-red-700"
+                    onClick={() => removeInputField(index)}
+                  />
+                </div>
+              ))}
+              <button
+                className="addInputField mt-3 px-4 py-2 bg-yellow-500 text-white rounded-md transition duration-200"
+                onClick={addInputField}
+              >
+                <FontAwesomeIcon icon={faPlus} className=" mr-2" />
+                Ajouter un champ d'input
+              </button>
+            </div>
+          </div>
+
           <div className="mt-5">
-            <button className="btnInviter">Créer un projet</button>
+            <button onClick={createProjet} className="btnInviter">
+              Créer un projet
+            </button>
           </div>
         </div>
       </div>

@@ -69,8 +69,7 @@ export default function MyprojectPage() {
           Les projets que vous avez créés :
         </h1>
         <div className="headMyProject">
-          <li className="Statut">Statut</li>
-          <li className="Pris">Pris par</li>
+          <li className="Pris ml-2">Pris par</li>
           <li className="Titres pl-2">Titre du projet</li>
           <li className="Priorite">Priorité</li>
           <li className="Date">Date limite</li>
@@ -79,8 +78,7 @@ export default function MyprojectPage() {
         <div className="LISTE">
           {projects.map((project, index) => (
             <div className="BodyMyProject" key={index}>
-              <li className="Statut">{project.status}</li>
-              <li className="Pris">{project.assignedTo}</li>
+              <li className="Pris ml-2">{project.assignedTo}</li>
               <li className="Titres pl-2">{project.title}</li>
               <li className="Priorite">{project.priority}</li>
               <li className="Date">{project.dueDate}</li>
@@ -126,7 +124,6 @@ export default function MyprojectPage() {
           Les projets que vous avez pris :
         </h1>
         <div className="headMyProject">
-          <li className="Statuts">Statut</li>
           <li className="pl-2 Titres">Titre</li>
           <li className="Priorites">Priorité</li>
           <li className="Date">Date limite</li>
@@ -135,7 +132,6 @@ export default function MyprojectPage() {
         </div>
         <div className="LISTE">
           <div className="BodyMyProject">
-            <li className="Statuts">Pris</li>
             <li className="pl-2 Titres">Créer un App web</li>
             <li className="Priorites">Urgent</li>
             <li className="Date">20/01/2003</li>

@@ -114,9 +114,10 @@
   width: 10%;
   display: flex;
   justify-content: center;
-  align-items: end;
-  color: rgba(255, 0, 0, 0.616);
+  align-items: start;
   cursor: pointer;
+  position: relative;
+  font-weight: 500;
 }
 
 .email {

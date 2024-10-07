@@ -1,11 +1,18 @@
 import { useContext, useEffect, useState } from "react";
 import "../styles/GestionUserPage.css";
-import { faTrash, faList, faGrip } from "@fortawesome/free-solid-svg-icons";
+import {
+  faTrash,
+  faList,
+  faGrip,
+  faEllipsis,
+  faEdit,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ShowContext } from "../contexte/useShow";
 import { UrlContext } from "../contexte/useUrl";
 import { MessageContext } from "../contexte/useMessage";
 import { UserContext } from "../contexte/useUser";
+import Tippy from "@tippyjs/react";
 
 import axios from "axios";
 
@@ -15,6 +22,7 @@ export default function GestionUserPage() {
   const [showMessageErrorEmail, setShowMessageErrorEmail] = useState(false);
   const [showList, setShowList] = useState(false);
   const [showGrid, setShowGrid] = useState(true);
+  const [activeDropdown, setActiveDropdown] = useState("");
 
   const { setShowDeleteUser, setShowSpinner } = useContext(ShowContext);
   const { url } = useContext(UrlContext);
@@ -25,6 +33,16 @@ export default function GestionUserPage() {
     setShowList(false);
     setShowGrid(true);
   }
+
+  const toggleDropdown = (index) => {
+    setActiveDropdown((prev) => (prev === index ? null : index));
+  };
+
+  const closeDropdown = () => {
+    setActiveDropdown(null);
+  };
+
+
 
   function deleteuser(id) {
     setIduser(id);
@@ -82,7 +100,7 @@ export default function GestionUserPage() {
   }
 
   return (
-    <div className="formulaireAddUsers">
+    <div className="formulaireAddUsers" onClick={closeDropdown}>
       <h1 className="titreFormddUser">Inviter une personne :</h1>
       <div className="formContent flex mt-5">
         <div className="sm:col-span-3 w-60 mr-5">
@@ -136,7 +154,7 @@ export default function GestionUserPage() {
         </div>
       </div>
       <div className="listUser mt-5">
-        <h1 className="titleList">Liste des membres ({ListeUser.length})</h1>
+        <h1 className="titleList">Liste des employés ({ListeUser.length})</h1>
         <div className="showDisplay">
           <div
             onClick={switchToList}
@@ -155,7 +173,7 @@ export default function GestionUserPage() {
         </div>
         {showGrid && (
           <div className="ListMembresGrid mt-4">
-            {ListeUser.map((list) => (
+            {ListeUser.map((list, index) => (
               <div key={list.id} className="OneMembre mt-2 mr-10">
                 <div className="photouser"></div>
                 <div className="infosuser">
@@ -169,13 +187,36 @@ export default function GestionUserPage() {
                   </div>
                 </div>
                 <div className="deleteuser">
-                  <FontAwesomeIcon
-                    onClick={() => {
-                      deleteuser(list.id);
-                    }}
-                    icon={faTrash}
-                    className="mb-2 faTrash"
-                  />
+                  <Tippy content="Options">
+                    <FontAwesomeIcon
+                      icon={faEllipsis}
+                      className="w-5 h-5 mt-2  cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleDropdown(index);
+                      }}
+                    />
+                  </Tippy>
+                  {activeDropdown === index && (
+                    <ul className="border dropdown-menu absolute z-10 right-2 mt-10 py-1 w-32 bg-white shadow-lg rounded-md">
+                      <li className=" dropdown-item flex items-center px-3 py-2 cursor-pointer hover:bg-blue-400 hover:text-white">
+                        <FontAwesomeIcon icon={faEdit} className="mr-2" />
+                        Modifier
+                      </li>
+                      <li
+                        onClick={() => {
+                          deleteuser(list.id);
+                        }}
+                        className="dropdown-item flex items-center px-3 py-2 cursor-pointer hover:bg-blue-400 hover:text-white"
+                      >
+                        <FontAwesomeIcon
+                          icon={faTrash}
+                          className="red-icon mr-2"
+                        />
+                        Supprimer
+                      </li>
+                    </ul>
+                  )}
                 </div>
               </div>
             ))}
@@ -190,19 +231,42 @@ export default function GestionUserPage() {
               <li className="deleteList"></li>
             </div>
             <div className="bodyValue">
-              {ListeUser.map((list) => (
+              {ListeUser.map((list, index) => (
                 <div key={list.id} className="BodyList">
                   <li className="nomList">{list.nom}</li>
-                  <li className="adresseList">{list.telephone}</li>
+                  <li className="adresseList">{list.email}</li>
                   <li className="posteList">{list.poste}</li>
-                  <li className="deleteList deleteuser">
-                    <FontAwesomeIcon
-                      onClick={() => {
-                        deleteuser(list.id);
-                      }}
-                      icon={faTrash}
-                      className="mb-2 faTrash"
-                    />
+                  <li className="deleteList  more relative">
+                    <Tippy content="Options">
+                      <FontAwesomeIcon
+                        icon={faEllipsis}
+                        className="w-5 h-5  cursor-pointer"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleDropdown(index);
+                        }}
+                      />
+                    </Tippy>
+                    {activeDropdown === index && (
+                      <ul className="border dropdown-menu absolute z-10 right-0 mt-2 py-1 w-32 bg-white shadow-lg rounded-md">
+                        <li className="dropdown-item flex items-center px-3 py-2 cursor-pointer hover:bg-blue-400 hover:text-white">
+                          <FontAwesomeIcon icon={faEdit} className="mr-2" />
+                          Modifier
+                        </li>
+                        <li
+                          onClick={() => {
+                            deleteuser(list.id);
+                          }}
+                          className="dropdown-item flex items-center px-3 py-2 cursor-pointer hover:bg-blue-400 hover:text-white"
+                        >
+                          <FontAwesomeIcon
+                            icon={faTrash}
+                            className="red-icon mr-2"
+                          />
+                          Supprimer
+                        </li>
+                      </ul>
+                    )}
                   </li>
                 </div>
               ))}

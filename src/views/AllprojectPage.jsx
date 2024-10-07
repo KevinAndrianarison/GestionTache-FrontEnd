@@ -1,7 +1,7 @@
 import "../styles/MyprojectPage.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ShowContext } from "../contexte/useShow";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   faEllipsis,
   faAnglesRight,
@@ -9,23 +9,31 @@ import {
   faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import Tippy from "@tippyjs/react";
-import { useState } from "react";
+import axios from "axios";
+import { UrlContext } from "../contexte/useUrl";
+import { ProjectContext } from "../contexte/useProject";
 
 export default function AllprojectPage() {
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState(null); 
 
   const { setShowDetails } = useContext(ShowContext);
+  const { url } = useContext(UrlContext);
+  const { getAllproject, ListeProject } = useContext(ProjectContext);
 
-  const toggleDropdown = () => {
-    setShowDropdown(!showDropdown);
+  const toggleDropdown = (index) => {
+    setActiveDropdown(activeDropdown === index ? null : index);
   };
 
   function showDetails() {
     setShowDetails(true);
   }
 
+  useEffect(() => {
+    getAllproject();
+  }, []);
+
   const closeDropdown = () => {
-    setShowDropdown(false);
+    setActiveDropdown(null); 
   };
 
   return (
@@ -37,51 +45,51 @@ export default function AllprojectPage() {
         </h1>
         <div className="contentMyproject mt-4">
           <div className="headMyProject">
-            <li className="Statut">Statut</li>
-            <li className="Pris">Pris par</li>
+            <li className="Pris ml-2">Pris par</li>
             <li className="Titres">Titre du projet</li>
-            <li className="Priorite">Priorité</li>
+            <li className="Priorite">Date début</li>
             <li className="Date">Date limite</li>
             <li className="more mr-2"></li>
           </div>
-          <div className="LISTE">
-            <div className="BodyMyProject">
-              <li className="Statut">Pris</li>
-              <li className="Pris">ANDRIANARISON Steeve Kevin</li>
-              <li className="Titres">Créer un App web</li>
-              <li className="Priorite">Urgent</li>
-              <li className="Date">20/01/2003</li>
-              <li className="more relative">
-                <Tippy content="Options">
-                  <FontAwesomeIcon
-                    icon={faEllipsis}
-                    className="w-5 h-5 cursor-pointer"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleDropdown();
-                    }}
-                  />
-                </Tippy>
-                {showDropdown && (
-                  <ul className="dropdown-menu absolute right-0 mt-2 py-1 w-32 bg-white shadow-lg rounded-md">
-                    <li className="dropdown-item flex items-center px-3 py-2 cursor-pointer hover:bg-blue-400 hover:text-white">
-                      <FontAwesomeIcon
-                        icon={faCircleArrowDown}
-                        className="mr-2"
-                      />
-                      Prendre
-                    </li>
-                    <li
-                      onClick={showDetails}
-                      className="dropdown-item flex items-center px-3 py-2 cursor-pointer hover:bg-blue-400 hover:text-white"
-                    >
-                      <FontAwesomeIcon icon={faInfoCircle} className="mr-2" />
-                      Détails
-                    </li>
-                  </ul>
-                )}
-              </li>
-            </div>
+          <div className="LISTES">
+            {ListeProject.map((list, index) => (
+              <div key={list.id} className="BodyProject">
+                <li className="Pris ml-2">{list.chefs[0].nom}</li>
+                <li className="Titres">{list.titre}</li>
+                <li className="Priorite">{list.date_debut}</li>
+                <li className="Date">{list.date_fin}</li>
+                <li className="more relative">
+                  <Tippy content="Options">
+                    <FontAwesomeIcon
+                      icon={faEllipsis}
+                      className="w-5 h-5 cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleDropdown(index); 
+                      }}
+                    />
+                  </Tippy>
+                  {activeDropdown === index && ( 
+                    <ul className="border z-10 dropdown-menu absolute right-0 mt-2 py-1 w-32 bg-white shadow-lg rounded-md">
+                      <li className="dropdown-item flex items-center px-3 py-2 cursor-pointer hover:bg-blue-400 hover:text-white">
+                        <FontAwesomeIcon
+                          icon={faCircleArrowDown}
+                          className="mr-2"
+                        />
+                        Prendre
+                      </li>
+                      <li
+                        onClick={showDetails}
+                        className="dropdown-item flex items-center px-3 py-2 cursor-pointer hover:bg-blue-400 hover:text-white"
+                      >
+                        <FontAwesomeIcon icon={faInfoCircle} className="mr-2" />
+                        Détails
+                      </li>
+                    </ul>
+                  )}
+                </li>
+              </div>
+            ))}
           </div>
         </div>
       </div>

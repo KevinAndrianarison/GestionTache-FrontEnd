@@ -10,6 +10,7 @@ import { UrlContextProvider } from "./contexte/useUrl.jsx";
 import { ShowContextProvider } from "./contexte/useShow.jsx";
 import { MessageContextProvider } from "./contexte/useMessage.jsx";
 import { EntityContextProvider } from "./contexte/useEntity.jsx";
+import { ProjectContextProvider } from "./contexte/useProject.jsx";
 import { BrowserRouter } from "react-router-dom";
 
 createRoot(document.getElementById("root")).render(
@@ -20,7 +21,9 @@ createRoot(document.getElementById("root")).render(
           <ShowContextProvider>
             <EntityContextProvider>
               <UserContextProvider>
-                <App />
+                <ProjectContextProvider>
+                  <App />
+                </ProjectContextProvider>
               </UserContextProvider>
             </EntityContextProvider>
           </ShowContextProvider>

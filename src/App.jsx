@@ -17,7 +17,6 @@ import DeleteEntity from "./component/DeleteEntity";
 import { UserContext } from "./contexte/useUser";
 import { useNavigate } from "react-router-dom";
 
-
 function App() {
   const {
     showSpinner,
@@ -62,12 +61,11 @@ function App() {
         setUser(true);
         setShowMainPage(true);
       }
+      getAllUser();
     } else {
       setShowMainPage(false);
       setShowLoginPage(true);
     }
-    getAllUser()
-
   }, []);
 
   return (
