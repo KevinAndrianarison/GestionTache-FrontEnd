@@ -5,26 +5,25 @@ import { useContext, useEffect, useState } from "react";
 import {
   faEllipsis,
   faAnglesRight,
-  faCircleArrowDown,
   faInfoCircle,
+  faChartLine
 } from "@fortawesome/free-solid-svg-icons";
 import Tippy from "@tippyjs/react";
-import axios from "axios";
-import { UrlContext } from "../contexte/useUrl";
 import { ProjectContext } from "../contexte/useProject";
 
 export default function AllprojectPage() {
-  const [activeDropdown, setActiveDropdown] = useState(null); 
+  const [activeDropdown, setActiveDropdown] = useState(null);
 
   const { setShowDetails } = useContext(ShowContext);
-  const { url } = useContext(UrlContext);
-  const { getAllproject, ListeProject } = useContext(ProjectContext);
+  const { getAllproject, ListeProject, setOneProject } =
+    useContext(ProjectContext);
 
   const toggleDropdown = (index) => {
     setActiveDropdown(activeDropdown === index ? null : index);
   };
 
-  function showDetails() {
+  function showDetails(list) {
+    setOneProject(list);
     setShowDetails(true);
   }
 
@@ -33,7 +32,7 @@ export default function AllprojectPage() {
   }, []);
 
   const closeDropdown = () => {
-    setActiveDropdown(null); 
+    setActiveDropdown(null);
   };
 
   return (
@@ -45,7 +44,7 @@ export default function AllprojectPage() {
         </h1>
         <div className="contentMyproject mt-4">
           <div className="headMyProject">
-            <li className="Pris ml-2">Pris par</li>
+            <li className="Pris ml-2">Créer par</li>
             <li className="Titres">Titre du projet</li>
             <li className="Priorite">Date début</li>
             <li className="Date">Date limite</li>
@@ -65,24 +64,24 @@ export default function AllprojectPage() {
                       className="w-5 h-5 cursor-pointer"
                       onClick={(e) => {
                         e.stopPropagation();
-                        toggleDropdown(index); 
+                        toggleDropdown(index);
                       }}
                     />
                   </Tippy>
-                  {activeDropdown === index && ( 
-                    <ul className="border z-10 dropdown-menu absolute right-0 mt-2 py-1 w-32 bg-white shadow-lg rounded-md">
-                      <li className="dropdown-item flex items-center px-3 py-2 cursor-pointer hover:bg-blue-400 hover:text-white">
+                  {activeDropdown === index && (
+                    <ul className="w-40 border z-10 dropdown-menu absolute right-0 mt-2 py-1 w-32 bg-white shadow-lg rounded-md">
+                      <li className="dropdown-item flex items-center px-3 py-2 cursor-pointer hover:bg-gray-200">
                         <FontAwesomeIcon
-                          icon={faCircleArrowDown}
-                          className="mr-2"
+                          icon={faChartLine}
+                          className="text-green-500 mr-2"
                         />
-                        Prendre
+                        Progression
                       </li>
                       <li
-                        onClick={showDetails}
-                        className="dropdown-item flex items-center px-3 py-2 cursor-pointer hover:bg-blue-400 hover:text-white"
+                        onClick={() => showDetails(list)}
+                        className="dropdown-item flex items-center px-3 py-2 cursor-pointer hover:bg-gray-200"
                       >
-                        <FontAwesomeIcon icon={faInfoCircle} className="mr-2" />
+                        <FontAwesomeIcon icon={faInfoCircle} className="text-blue-400 mr-2" />
                         Détails
                       </li>
                     </ul>

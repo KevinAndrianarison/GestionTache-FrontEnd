@@ -5,7 +5,7 @@ import {
   faList,
   faGrip,
   faEllipsis,
-  faEdit,
+  faBan,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ShowContext } from "../contexte/useShow";
@@ -41,8 +41,6 @@ export default function GestionUserPage() {
   const closeDropdown = () => {
     setActiveDropdown(null);
   };
-
-
 
   function deleteuser(id) {
     setIduser(id);
@@ -154,7 +152,9 @@ export default function GestionUserPage() {
         </div>
       </div>
       <div className="listUser mt-5">
-        <h1 className="titleList">Liste des employés ({ListeUser.length})</h1>
+        <h1 className="titleList">
+          Liste des employés ({Math.abs(ListeUser.length - 1)})
+        </h1>
         <div className="showDisplay">
           <div
             onClick={switchToList}
@@ -173,53 +173,56 @@ export default function GestionUserPage() {
         </div>
         {showGrid && (
           <div className="ListMembresGrid mt-4">
-            {ListeUser.map((list, index) => (
-              <div key={list.id} className="OneMembre mt-2 mr-10">
-                <div className="photouser"></div>
-                <div className="infosuser">
-                  <div>
-                    <h1>{list.nom}</h1>
-                    <p className="poste">{list.poste}</p>
-                  </div>
-                  <div className="adresse">{list.telephone}</div>
-                  <div className="email">
-                    <p>{list.email}</p>
-                  </div>
-                </div>
-                <div className="deleteuser">
-                  <Tippy content="Options">
-                    <FontAwesomeIcon
-                      icon={faEllipsis}
-                      className="w-5 h-5 mt-2  cursor-pointer"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleDropdown(index);
-                      }}
-                    />
-                  </Tippy>
-                  {activeDropdown === index && (
-                    <ul className="border dropdown-menu absolute z-10 right-2 mt-10 py-1 w-32 bg-white shadow-lg rounded-md">
-                      <li className=" dropdown-item flex items-center px-3 py-2 cursor-pointer hover:bg-blue-400 hover:text-white">
-                        <FontAwesomeIcon icon={faEdit} className="mr-2" />
-                        Modifier
-                      </li>
-                      <li
-                        onClick={() => {
-                          deleteuser(list.id);
-                        }}
-                        className="dropdown-item flex items-center px-3 py-2 cursor-pointer hover:bg-blue-400 hover:text-white"
-                      >
+            {ListeUser.map(
+              (list, index) =>
+                list.role === "employe" && (
+                  <div key={list.id} className="OneMembre mt-2 mr-10">
+                    <div className="photouser"></div>
+                    <div className="infosuser">
+                      <div>
+                        <h1>{list.nom}</h1>
+                        <p className="poste">{list.poste}</p>
+                      </div>
+                      <div className="adresse">{list.telephone}</div>
+                      <div className="email">
+                        <p>{list.email}</p>
+                      </div>
+                    </div>
+                    <div className="deleteuser">
+                      <Tippy content="Options">
                         <FontAwesomeIcon
-                          icon={faTrash}
-                          className="red-icon mr-2"
+                          icon={faEllipsis}
+                          className="w-5 h-5 mt-2  cursor-pointer"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleDropdown(index);
+                          }}
                         />
-                        Supprimer
-                      </li>
-                    </ul>
-                  )}
-                </div>
-              </div>
-            ))}
+                      </Tippy>
+                      {activeDropdown === index && (
+                        <ul className="border dropdown-menu absolute z-10 right-2 mt-10 py-1 w-32 bg-white shadow-lg rounded-md">
+                          {/* <li className=" dropdown-item flex items-center px-3 py-2 cursor-pointer hover:bg-gray-200">
+                            <FontAwesomeIcon icon={faBan} className="text-yellow-500 mr-2" />
+                            Bloquer
+                          </li> */}
+                          <li
+                            onClick={() => {
+                              deleteuser(list.id);
+                            }}
+                            className="dropdown-item flex items-center px-3 py-2 cursor-pointer hover:bg-gray-200"
+                          >
+                            <FontAwesomeIcon
+                              icon={faTrash}
+                              className="red-icon mr-2"
+                            />
+                            Supprimer
+                          </li>
+                        </ul>
+                      )}
+                    </div>
+                  </div>
+                )
+            )}
           </div>
         )}
         {showList && (
@@ -249,15 +252,15 @@ export default function GestionUserPage() {
                     </Tippy>
                     {activeDropdown === index && (
                       <ul className="border dropdown-menu absolute z-10 right-0 mt-2 py-1 w-32 bg-white shadow-lg rounded-md">
-                        <li className="dropdown-item flex items-center px-3 py-2 cursor-pointer hover:bg-blue-400 hover:text-white">
-                          <FontAwesomeIcon icon={faEdit} className="mr-2" />
-                          Modifier
-                        </li>
+                        {/* <li className="dropdown-item flex items-center px-3 py-2 cursor-pointer hover:bg-gray-200">
+                          <FontAwesomeIcon icon={faBan} className=" text-yellow-500 mr-2" />
+                          Bloquer
+                        </li> */}
                         <li
                           onClick={() => {
                             deleteuser(list.id);
                           }}
-                          className="dropdown-item flex items-center px-3 py-2 cursor-pointer hover:bg-blue-400 hover:text-white"
+                          className="dropdown-item flex items-center px-3 py-2 cursor-pointer hover:bg-gray-200"
                         >
                           <FontAwesomeIcon
                             icon={faTrash}
