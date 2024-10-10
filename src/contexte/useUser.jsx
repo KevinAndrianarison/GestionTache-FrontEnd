@@ -5,11 +5,13 @@ import axios from "axios";
 export const UserContext = createContext({
   ListeUser: [],
   iduser: "",
+  Nomuser: "",
 });
 
 export function UserContextProvider({ children }) {
   const [ListeUser, setListeUser] = useState([]);
   const [iduser, setIduser] = useState("");
+  const [Nomuser, setNomuser] = useState("");
 
   const { url } = useContext(UrlContext);
 
@@ -38,9 +40,11 @@ export function UserContextProvider({ children }) {
       value={{
         ListeUser,
         iduser,
+        Nomuser,
         getAllUser,
         setListeUser,
         setIduser,
+        setNomuser
       }}
     >
       {children}

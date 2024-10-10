@@ -1,43 +1,46 @@
 import "../styles/Modal.css";
 import { ShowContext } from "../contexte/useShow";
 import { useContext } from "react";
-import { ProjectContext } from "../contexte/useProject";
-import { MessageContext } from "../contexte/useMessage";
 import { UrlContext } from "../contexte/useUrl";
+import { MessageContext } from "../contexte/useMessage";
+import { UserContext } from "../contexte/useUser";
+import { ProjectContext } from "../contexte/useProject";
+
 import axios from "axios";
 
-export default function DeleteProject() {
-  const { setShowDeleteTask, setShowSpinner } = useContext(ShowContext);
-  const {
-    idProject,
-    getProjectWhenChef,
-    getAllproject,
-    getProjectWhenMembres,
-  } = useContext(ProjectContext);
+export default function DeleteUser() {
+  const { setShowRetirer, setShowSpinner } = useContext(ShowContext);
   const { url } = useContext(UrlContext);
+  const { iduser, Nomuser } = useContext(UserContext);
   const { setMessageSucces, setMessageError } = useContext(MessageContext);
+  const { idProjet, getOneProjet } = useContext(ProjectContext);
 
-  function closeDelProject() {
-    setShowDeleteTask(false);
+  function closeRetireruser() {
+    setShowRetirer(false);
   }
 
-  function deleteProject() {
+  function retirerMembres() {
     setShowSpinner(true);
     const tokenString = localStorage.getItem("token");
     let token = JSON.parse(tokenString);
+    let formData = {
+      membre_id: iduser,
+    };
     axios
-      .delete(`${url}/api/entreprises/projets/${idProject}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      .put(
+        `${url}/api/entreprises/projets/${idProjet}/membre-retire`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       .then((response) => {
-        getProjectWhenChef();
-        getAllproject();
-        getProjectWhenMembres();
+        getOneProjet(idProjet);
         setMessageSucces(response.data.message);
         setShowSpinner(false);
-        setShowDeleteTask(false);
+        setShowRetirer(false);
         setTimeout(() => {
           setMessageSucces("");
         }, 5000);
@@ -52,18 +55,20 @@ export default function DeleteProject() {
     <>
       <div className="showModal">
         <div className="formModal">
-          <h6 className="modal">Voulez-vous vraiment supprimer ce projet ?</h6>
+          <h6 className="modal">
+            Voulez-vous vraiment retirer "<b>{Nomuser}</b>" de ce projet ?
+          </h6>
           <div className="valider">
             <button
-              onClick={deleteProject}
               type="button"
+              onClick={retirerMembres}
               className="SUPPR mt-5"
             >
               OUI
             </button>
             <button
               type="button"
-              onClick={closeDelProject}
+              onClick={closeRetireruser}
               className="NON mt-5"
             >
               NON

@@ -3,13 +3,153 @@ import {
   faSquarePlus,
   faXmark,
   faClock,
-  faFlag,
+  faPlus,
+  faTrash,
+  faList,
+  faCircleXmark,
 } from "@fortawesome/free-solid-svg-icons";
+import { useContext, useState } from "react";
+import { ProjectContext } from "../contexte/useProject";
+import axios from "axios";
+import { UrlContext } from "../contexte/useUrl";
+import { MessageContext } from "../contexte/useMessage";
 import { ShowContext } from "../contexte/useShow";
-import { useContext } from "react";
+import { UserContext } from "../contexte/useUser";
+import Tippy from "@tippyjs/react";
+import "../styles/SetProject.css";
 
-export default function SetProject() {
-  const { setShowSetProject } = useContext(ShowContext);
+export default function CreateProject() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [selectedMembers, setSelectedMembers] = useState([]);
+  const [userIds, setUserIds] = useState([]);
+  const [showListMembres, setShowListMembres] = useState(false);
+  const [inputFields, setInputFields] = useState([]);
+
+  const {
+    nomProjet,
+    dateDebut,
+    dateFin,
+    description,
+    setNomProjet,
+    setDateDebut,
+    setDateFin,
+    setDescription,
+    idProjet,
+    getOneProjet,
+    ListMembres,
+  } = useContext(ProjectContext);
+  const { setMessageSucces, setMessageError } = useContext(MessageContext);
+  const { url } = useContext(UrlContext);
+  const { setShowSpinner, setShowSetProject, setShowRetirer } =
+    useContext(ShowContext);
+  const { ListeUser, setIduser, setNomuser } = useContext(UserContext);
+
+  function addNewmembres() {
+    let formData = {
+      membres: userIds,
+    };
+    setShowSpinner(true);
+    const tokenString = localStorage.getItem("token");
+    let token = JSON.parse(tokenString);
+    axios
+      .put(`${url}/api/entreprises/projets/${idProjet}`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        getOneProjet(idProjet);
+        setSelectedMembers([]);
+        setMessageSucces(response.data.message);
+        setShowSpinner(false);
+        setTimeout(() => {
+          setMessageSucces("");
+        }, 5000);
+      })
+      .catch((err) => {
+        console.error(err);
+        setShowSpinner(false);
+      });
+  }
+
+  function retirerMembres(id, nom) {
+    setIduser(id);
+    setNomuser(nom);
+    setShowRetirer(true);
+  }
+
+  function modifierProjet() {
+    let formData = {
+      titre: nomProjet,
+      date_debut: dateDebut,
+      date_fin: dateFin,
+      description: description,
+    };
+    setShowSpinner(true);
+    const tokenString = localStorage.getItem("token");
+    let token = JSON.parse(tokenString);
+    const userString = localStorage.getItem("user");
+    let user = JSON.parse(userString);
+    axios
+      .put(`${url}/api/entreprises/projets/${user.id}/${idProjet}`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        getOneProjet(idProjet);
+        setMessageSucces(response.data.message);
+        setShowSpinner(false);
+        setTimeout(() => {
+          setMessageSucces("");
+        }, 5000);
+      })
+      .catch((err) => {
+        console.error(err);
+        setShowSpinner(false);
+      });
+  }
+
+  const filteredOptions = ListeUser.filter((user) =>
+    user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  function removeInputField(index) {
+    const values = [...inputFields];
+    values.splice(index, 1);
+    setInputFields(values);
+  }
+
+  function handleInputChange(index, event) {
+    const values = [...inputFields];
+    values[index] = event.target.value;
+    setInputFields(values);
+  }
+
+  function handleSearchChange(event) {
+    const value = event.target.value;
+    setSearchTerm(value);
+    setIsDropdownOpen(value !== "");
+  }
+
+  function addInputField() {
+    setInputFields([...inputFields, ""]);
+  }
+
+  function handleRemoveMember(member) {
+    setSelectedMembers(selectedMembers.filter((m) => m !== member));
+    setUserIds(userIds.filter((id) => id !== member.id));
+  }
+
+  function handleOptionSelect(option) {
+    if (!selectedMembers.includes(option)) {
+      setSelectedMembers([...selectedMembers, option]);
+      setUserIds([...userIds, option.id]);
+    }
+    setSearchTerm("");
+    setIsDropdownOpen(false);
+  }
 
   function closeCreateProject() {
     setShowSetProject(false);
@@ -17,63 +157,223 @@ export default function SetProject() {
 
   return (
     <>
-      <div className="showModal">
-        <div className="formModalCreatePost">
-          <div className="headCreateTask pb-4">
-            <div className="icone">
-              <FontAwesomeIcon
-                icon={faSquarePlus}
-                className="add faSquarePlus"
-              />
+      <div className="showModals">
+        <div className="contentCenter">
+          <div
+            className="formModalCreatePosts"
+            onClick={() => setShowListMembres(false)}
+          >
+            <div className="headCreateTask pb-4">
+              <div className="icone">
+                <FontAwesomeIcon
+                  icon={faSquarePlus}
+                  className="add h-7 w-7 faSquarePlus"
+                />
+              </div>
+              <div className="titreTask">
+                <input
+                  type="text"
+                  value={nomProjet}
+                  onChange={(e) => setNomProjet(e.target.value)}
+                  placeholder="Titre du projet"
+                  className="input pl-3 pr-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none"
+                />
+              </div>
+              <div className="close">
+                <FontAwesomeIcon
+                  onClick={closeCreateProject}
+                  icon={faXmark}
+                  className="h-7 w-7 ml-5 add cursor-pointer transition duration-200 ease-in-out hover:text-gray-500 hover:scale-110"
+                />
+              </div>
             </div>
-            <div className="titreTask">
-              <input
-                type="text"
-                placeholder="Titre du projet"
-                className="pl-3 pr-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none"
-              />
-            </div>
-            <div className="close">
-              <FontAwesomeIcon
-                onClick={closeCreateProject}
-                icon={faXmark}
-                className="add"
-              />
-            </div>
-          </div>
-          <div className="section mt-10">
-            <div className="label mr-5">
-              <FontAwesomeIcon icon={faClock} className="w-5 h-5 mr-4" /> Date
-              limite
-            </div>
-            <div className="Inputs mt-2">
-              <input
-                type="date"
-                className="pl-3 w-52 pr-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none"
-              />
-            </div>
-          </div>
-          <div className="section mt-5">
-            <div className="label mr-5">
-              <FontAwesomeIcon icon={faFlag} className="w-5 h-5 mr-4" /> Niveau
-              de priorité
-            </div>
-            <div className="Inputs mt-2">
-              <select className="pl-3 w-52 pr-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none">
-                <option value="low">Basse</option>
-                <option value="medium">Moyenne</option>
-                <option value="high">Haute</option>
-              </select>
-            </div>
-          </div>
-          <div className="label mt-5">Description</div>
 
-          <div className="section mt-5">
-            <textarea className="pl-3 w-52 pr-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none" />
+            <div className="section mt-5">
+              <div className="dateInputs w-full flex justify-between flex-wrap">
+                <div className="inputGroup w-60 mb-5">
+                  <label className="input flex items-center font-medium text-gray-700 mb-1">
+                    <FontAwesomeIcon icon={faClock} className="w-4 h-4 mr-2" />
+                    Date de début
+                  </label>
+                  <input
+                    type="date"
+                    value={dateDebut}
+                    onChange={(e) => setDateDebut(e.target.value)}
+                    className="input pl-3 pr-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none"
+                  />
+                </div>
+
+                <div className="inputGroup w-60 mb-5">
+                  <label className="input flex items-center font-medium text-gray-700 mb-1">
+                    <FontAwesomeIcon icon={faClock} className="w-4 h-4 mr-2" />
+                    Date de fin
+                  </label>
+                  <input
+                    type="date"
+                    value={dateFin}
+                    onChange={(e) => setDateFin(e.target.value)}
+                    className="input pl-3 pr-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="label mt-2">Description :</div>
+
+            <div className="section mt-2">
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="input pl-3 w-52 pr-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none"
+              />
+            </div>
+
+            <div className="w-52 ">
+              <label className="input flex items-center font-medium text-gray-700 mb-1">
+                &nbsp;
+              </label>
+              <button onClick={modifierProjet} className="input btnInviter">
+                Modifier
+              </button>
+            </div>
+
+            <div className="section mt-5 flex items-center">
+              <div className="relative w-full">
+                <div className="label">Ajouter des nouveaux membres :</div>
+
+                <div className="flex mt-2 items-center relative">
+                  <input
+                    type="text"
+                    placeholder="Rechercher..."
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    className="input pl-3 pr-10 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none"
+                  />
+                  <FontAwesomeIcon
+                    icon={faPlus}
+                    onClick={() => handleOptionSelect({ email: searchTerm })}
+                    className="absolute right-3 text-gray-400 cursor-pointer transition duration-200 hover:text-[rgba(0, 184, 148,1.0)] hover:scale-125"
+                  />
+                </div>
+                {isDropdownOpen && (
+                  <div className="absolute mt-1 w-full rounded-md bg-white shadow-lg z-10">
+                    {filteredOptions.length > 0 ? (
+                      filteredOptions.map((user, index) => (
+                        <div
+                          key={index}
+                          className="px-4 py-2 text-sm cursor-pointer hover:bg-gray-200"
+                          onClick={() => handleOptionSelect(user)}
+                        >
+                          {user.email}
+                        </div>
+                      ))
+                    ) : (
+                      <div className="px-4 py-2 text-sm text-gray-500">
+                        Aucune option disponible
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {selectedMembers.length > 0 && (
+              <div className="mt-5 ">
+                <div className="flex flex-wrap wrap justify-between">
+                  {selectedMembers.map((member, index) => (
+                    <div
+                      key={index}
+                      className="input text-black w-60 mt-2 bg-gray-200 rounded-md px-4 py-2 flex justify-between items-center"
+                    >
+                      {member.email}
+                      <FontAwesomeIcon
+                        icon={faXmark}
+                        onClick={() => handleRemoveMember(member)}
+                        className="cursor-pointer text-red-500 hover:text-red-700"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="flex w-full  justify-between flex-wrap">
+              <div className="w-52 mt-2">
+                <button onClick={addNewmembres} className="input btnInviter">
+                  Ajouter
+                </button>
+              </div>
+              <div className="mt-2">
+                <Tippy content="Liste des membres">
+                  <FontAwesomeIcon
+                    icon={faList}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowListMembres(true);
+                    }}
+                    className="w-5 h-5 mr-2 cursor-pointer"
+                  />
+                </Tippy>
+              </div>
+            </div>
+
+            <div className="section mt-5">
+              <div className="label">Ajouter des champs d'input :</div>
+              <div className="sections mt-2">
+                {inputFields.map((input, index) => (
+                  <div key={index} className="w-full relative mt-2">
+                    <input
+                      type="text"
+                      placeholder={`Champ d'input ${index + 1}`}
+                      className="input pl-3 pr-10 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none"
+                      value={input}
+                      onChange={(e) => handleInputChange(index, e)}
+                    />
+                    <FontAwesomeIcon
+                      icon={faTrash}
+                      onClick={() => removeInputField(index)}
+                      className="faTrashIcon absolute right-3 top-1/2 transform -translate-y-1/2 text-red-500 cursor-pointer hover:text-red-700"
+                    />
+                  </div>
+                ))}
+                <button
+                  className="addInputField mt-3 px-4 py-2 bg-yellow-500 text-white rounded-md transition duration-200"
+                  onClick={addInputField}
+                >
+                  <FontAwesomeIcon icon={faPlus} className=" mr-2" />
+                  Ajouter un champ d'input
+                </button>
+              </div>
+            </div>
           </div>
-          <div className="mt-5">
-            <button className="btnInviter">Modifier le projet</button>
-          </div>
+          {showListMembres && (
+            <div className="ListMembres pl-10">
+              <h1 className=" mt-10 font-bold  titreListemembres">
+                <FontAwesomeIcon
+                  icon={faList}
+                  className=" mr-2 cursor-pointer"
+                />
+                Liste des membres :
+              </h1>
+              <ul className="heightListMembres mt-5">
+                {ListMembres.map((membre, index) => (
+                  <li
+                    key={index}
+                    className="mt-2 flex justify-between align-center onemembres"
+                  >
+                    <p className="mr-5">👤</p> <p>{membre.nom}</p>
+                    <Tippy content="Retirer du projet">
+                      <FontAwesomeIcon
+                        icon={faCircleXmark}
+                        className=" text-red-500 w-5 h-5"
+                        onClick={() => retirerMembres(membre.id, membre.nom)}
+                      />
+                    </Tippy>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </div>
     </>

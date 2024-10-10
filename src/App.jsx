@@ -12,6 +12,7 @@ import CreateProject from "./component/CreateProject";
 import DeleteProject from "./component/DeleteProject";
 import SetProject from "./component/SetProject";
 import SeRetirer from "./component/SeRetirer";
+import RetirerMembres from "./component/RetirerMembres";
 import DetailsProject from "./component/DetailsProjet";
 import DeleteEntity from "./component/DeleteEntity";
 import { UserContext } from "./contexte/useUser";
@@ -34,6 +35,7 @@ function App() {
     showSeretirer,
     setShowAdmin,
     showDeleteEntity,
+    showRetirer,
     setUser,
   } = useContext(ShowContext);
   const { getAllUser } = useContext(UserContext);
@@ -82,6 +84,7 @@ function App() {
       {showSeretirer && <SeRetirer />}
       {showDetails && <DetailsProject />}
       {showDeleteEntity && <DeleteEntity />}
+      {showRetirer && <RetirerMembres />}
 
       <AlertComponent />
     </div>

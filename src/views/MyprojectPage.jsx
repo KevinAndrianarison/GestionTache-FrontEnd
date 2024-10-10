@@ -18,13 +18,20 @@ import { ShowContext } from "../contexte/useShow";
 import { ProjectContext } from "../contexte/useProject";
 
 export default function MyprojectPage() {
-  const { setShowDeleteTask, setShowSetProject, setShowSeretirer } =
-    useContext(ShowContext);
   const {
-    getProjectWhenCheforMembres,
+    setShowDeleteTask,
+    setShowSetProject,
+    setShowSeretirer,
+    setShowDetails,
+  } = useContext(ShowContext);
+  const {
+    getProjectWhenChef,
     ListeProjectWhenChef,
     ListeProjectWhenMembres,
-    setIdProject
+    setIdProject,
+    getProjectWhenMembres,
+    setOneProject,
+    getOneProjet,
   } = useContext(ProjectContext);
 
   const [activeDropdown, setActiveDropdown] = useState({
@@ -33,8 +40,14 @@ export default function MyprojectPage() {
   });
 
   useEffect(() => {
-    getProjectWhenCheforMembres();
+    getProjectWhenChef();
+    getProjectWhenMembres();
   }, []);
+
+  function showDetails(list) {
+    setOneProject(list);
+    setShowDetails(true);
+  }
 
   const toggleDropdown = (type, index) => {
     setActiveDropdown((prev) =>
@@ -44,9 +57,8 @@ export default function MyprojectPage() {
     );
   };
 
-
-  function setProject() {
-    setShowSetProject(true);
+  function setProject(idProject) {
+    getOneProjet(idProject);
   }
 
   function seRetirer() {
@@ -54,14 +66,13 @@ export default function MyprojectPage() {
   }
 
   function deleteProject(id) {
-    setIdProject(id)
+    setIdProject(id);
     setShowDeleteTask(true);
   }
 
   const closeDropdown = () => {
     setActiveDropdown({ type: "", index: null });
   };
-
 
   return (
     <div className="myprojectPage" onClick={closeDropdown}>
@@ -103,7 +114,7 @@ export default function MyprojectPage() {
                   activeDropdown.index === index && (
                     <ul className="w-52 border dropdown-menu absolute z-20 right-0  py-1 bg-white shadow-lg rounded-md">
                       <li
-                        onClick={setProject}
+                        onClick={() => setProject(project.id)}
                         className="dropdown-item flex items-center px-3 py-2 cursor-pointer hover:bg-gray-200"
                       >
                         <FontAwesomeIcon
@@ -122,7 +133,6 @@ export default function MyprojectPage() {
                       <li
                         className="dropdown-item flex items-center px-3 py-2 cursor-pointer hover:bg-gray-200"
                         onClick={() => deleteProject(project.id)}
-
                       >
                         <FontAwesomeIcon
                           icon={faTrash}
@@ -176,7 +186,6 @@ export default function MyprojectPage() {
                   activeDropdown.index === index && (
                     <ul className="border dropdown-menu absolute z-10 right-0  py-1 w-52 bg-white shadow-lg rounded-md">
                       <li
-                        onClick={setProject}
                         className="dropdown-item flex items-center px-3 py-2 cursor-pointer hover:bg-gray-200"
                       >
                         <FontAwesomeIcon
@@ -186,7 +195,10 @@ export default function MyprojectPage() {
                         Mes tâches
                       </li>
 
-                      <li className="dropdown-item flex items-center px-3 py-2 cursor-pointer hover:bg-gray-200 ">
+                      <li
+                        onClick={() => showDetails(projet)}
+                        className="dropdown-item flex items-center px-3 py-2 cursor-pointer hover:bg-gray-200 "
+                      >
                         <FontAwesomeIcon
                           icon={faInfoCircle}
                           className="text-blue-400 mr-2 "

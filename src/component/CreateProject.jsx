@@ -11,6 +11,7 @@ import { useContext, useState } from "react";
 import { UserContext } from "../contexte/useUser";
 import { UrlContext } from "../contexte/useUrl";
 import { MessageContext } from "../contexte/useMessage";
+import { ProjectContext } from "../contexte/useProject";
 import axios from "axios";
 
 export default function CreateProject() {
@@ -28,6 +29,8 @@ export default function CreateProject() {
   const { url } = useContext(UrlContext);
   const { setShowcreateTask, setShowSpinner } = useContext(ShowContext);
   const { setMessageSucces, setMessageError } = useContext(MessageContext);
+  const { getProjectWhenChef, getAllproject, getProjectWhenMembres } = useContext(ProjectContext);
+
 
   function closeCreateProject() {
     setShowcreateTask(false);
@@ -99,6 +102,9 @@ export default function CreateProject() {
         },
       })
       .then((response) => {
+        getProjectWhenMembres()
+        getProjectWhenChef()
+        getAllproject()
         setTitreProjet("");
         setDescription("");
         setDateDebut("");
@@ -232,7 +238,7 @@ export default function CreateProject() {
                 {selectedMembers.map((member, index) => (
                   <div
                     key={index}
-                    className=" w-60 mt-2 bg-gray-200 rounded-md px-4 py-2 flex justify-between items-center"
+                    className="input text-black w-60 mt-2 bg-gray-200 rounded-md px-4 py-2 flex justify-between items-center"
                   >
                     {member.email}
                     <FontAwesomeIcon

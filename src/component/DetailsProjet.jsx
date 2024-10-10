@@ -36,7 +36,7 @@ export default function DetailsProject() {
             {oneProject.chefs.length !== 0 && (
               <ul>
                 {oneProject.chefs.map((list) => (
-                  <li key={list.id}>- {list.nom}</li>
+                  <li key={list.id}>🌟 {list.nom}</li>
                 ))}
               </ul>
             )}
@@ -53,7 +53,7 @@ export default function DetailsProject() {
             {oneProject.membres.length !== 0 && (
               <ul>
                 {oneProject.membres.map((list) => (
-                  <li key={list.id}>- {list.nom}</li>
+                  <li key={list.id}>👤 {list.nom}</li>
                 ))}
               </ul>
             )}
