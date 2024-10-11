@@ -9,13 +9,13 @@ export const ProjectContext = createContext({
   ListeProjectWhenChef: [],
   ListeProjectWhenMembres: [],
   ListMembres: [],
+  ListChefs: [],
   oneProject: {},
   nomProjet: "",
   dateDebut: "",
   dateFin: "",
   description: "",
   idProjet: "",
-
 });
 export function ProjectContextProvider({ children }) {
   const [ListeProject, setListeProject] = useState([]);
@@ -29,6 +29,7 @@ export function ProjectContextProvider({ children }) {
   const [description, setDescription] = useState({});
   const [idProjet, setIdProjet] = useState({});
   const [ListMembres, setListMembres] = useState([]);
+  const [ListChefs, setListChefs] = useState([]);
   const { url } = useContext(UrlContext);
   const { setShowSetProject } = useContext(ShowContext);
 
@@ -106,14 +107,14 @@ export function ProjectContextProvider({ children }) {
         }
       )
       .then((response) => {
-        setNomProjet(response.data.data.titre)
-        setDateDebut(response.data.data.date_debut)
-        setDateFin(response.data.data.date_fin)
-        setDescription(response.data.data.description)
-        setIdProjet(response.data.data.id)
+        setNomProjet(response.data.data.titre);
+        setDateDebut(response.data.data.date_debut);
+        setDateFin(response.data.data.date_fin);
+        setDescription(response.data.data.description);
+        setIdProjet(response.data.data.id);
         setShowSetProject(true);
-        setListMembres(response.data.data.membres)
-        
+        setListMembres(response.data.data.membres);
+        setListChefs(response.data.data.chefs);
       })
       .catch((err) => {
         console.error(err);
@@ -127,12 +128,13 @@ export function ProjectContextProvider({ children }) {
         ListeProjectWhenChef,
         ListeProjectWhenMembres,
         idProject,
-        nomProjet, 
+        nomProjet,
         dateDebut,
         dateFin,
         description,
         idProjet,
         ListMembres,
+        ListChefs,
         setListeProject,
         setOneProject,
         getAllproject,
@@ -144,7 +146,8 @@ export function ProjectContextProvider({ children }) {
         setDateDebut,
         setDateFin,
         setDescription,
-        setListMembres
+        setListChefs,
+        setListMembres,
       }}
     >
       {children}

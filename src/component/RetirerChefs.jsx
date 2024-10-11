@@ -8,29 +8,29 @@ import { ProjectContext } from "../contexte/useProject";
 
 import axios from "axios";
 
-export default function RetierMembres() {
-  const { setShowRetirer, setShowSpinner } = useContext(ShowContext);
+export default function RetirerChefs() {
+  const { setShowRetierChefs, setShowSpinner } = useContext(ShowContext);
   const { url } = useContext(UrlContext);
   const { iduser, Nomuser } = useContext(UserContext);
   const { setMessageSucces, setMessageError } = useContext(MessageContext);
   const { idProjet, getOneProjet, getAllproject, getProjectWhenMembres } =
     useContext(ProjectContext);
 
-  function closeRetireruser() {
-    setShowRetirer(false);
+  function closeRetirerChefs() {
+    setShowRetierChefs(false);
   }
 
-  function retirerMembres() {
+  function retirerChefs() {
     setShowSpinner(true);
     const tokenString = localStorage.getItem("token");
     let token = JSON.parse(tokenString);
     let formData = {
-      membre_id: iduser,
+      chef_id: iduser,
     };
 
     axios
       .put(
-        `${url}/api/entreprises/projet/${idProjet}/membre-retire`,
+        `${url}/api/entreprises/projet/${idProjet}/chef-retire`,
         formData,
         {
           headers: {
@@ -42,7 +42,7 @@ export default function RetierMembres() {
         getOneProjet(idProjet);
         setMessageSucces(response.data.message);
         setShowSpinner(false);
-        setShowRetirer(false);
+        setShowRetierChefs(false);
         setTimeout(() => {
           setMessageSucces("");
         }, 5000);
@@ -50,8 +50,11 @@ export default function RetierMembres() {
         getAllproject()
       })
       .catch((err) => {
-        console.error(err);
+        setMessageError(err.response.data.error);
         setShowSpinner(false);
+        setTimeout(() => {
+            setMessageError("");
+          }, 5000);
       });
   }
 
@@ -65,14 +68,14 @@ export default function RetierMembres() {
           <div className="valider">
             <button
               type="button"
-              onClick={retirerMembres}
+              onClick={retirerChefs}
               className="SUPPR mt-5"
             >
               OUI
             </button>
             <button
               type="button"
-              onClick={closeRetireruser}
+              onClick={closeRetirerChefs}
               className="NON mt-5"
             >
               NON

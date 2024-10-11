@@ -282,7 +282,7 @@ export default function CreateProject() {
           </div>
 
           <div className="mt-5">
-            <button onClick={createProjet} className="btnInviter">
+            <button disabled={!titreProjet || !dateDebut || !dateFin || !(userIds.length !== 0)} onClick={createProjet} className="btnInviter">
               Créer un projet
             </button>
           </div>

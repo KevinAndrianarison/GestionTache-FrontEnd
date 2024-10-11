@@ -19,12 +19,17 @@ import Tippy from "@tippyjs/react";
 import "../styles/SetProject.css";
 
 export default function CreateProject() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [userIds, setUserIds] = useState([]);
   const [showListMembres, setShowListMembres] = useState(false);
+  const [showListChefs, setShowListChefs] = useState(false);
   const [inputFields, setInputFields] = useState([]);
+  const [chefDeProjet, setChefDeProjet] = useState("");
+
+  const [searchTermChef, setSearchTermChef] = useState("");
+  const [searchTermMembre, setSearchTermMembre] = useState("");
+  const [isDropdownOpenChef, setIsDropdownOpenChef] = useState(false);
+  const [isDropdownOpenMembre, setIsDropdownOpenMembre] = useState(false);
 
   const {
     nomProjet,
@@ -38,17 +43,42 @@ export default function CreateProject() {
     idProjet,
     getOneProjet,
     ListMembres,
+    getAllproject,
+    getProjectWhenChef,
+    getProjectWhenMembres,
+    ListChefs
   } = useContext(ProjectContext);
   const { setMessageSucces, setMessageError } = useContext(MessageContext);
   const { url } = useContext(UrlContext);
-  const { setShowSpinner, setShowSetProject, setShowRetirer } =
+  const { setShowSpinner, setShowSetProject, setShowRetirer, setShowRetierChefs } =
     useContext(ShowContext);
   const { ListeUser, setIduser, setNomuser } = useContext(UserContext);
+
+  const filteredOptionsChef = ListeUser.filter((user) =>
+    user.email.toLowerCase().includes(searchTermChef.toLowerCase())
+  );
+
+  const filteredOptionsMembre = ListeUser.filter((user) =>
+    user.email.toLowerCase().includes(searchTermMembre.toLowerCase())
+  );
+
+  function handleSearchChangeChef(event) {
+    const value = event.target.value;
+    setSearchTermChef(value);
+    setIsDropdownOpenChef(value !== "");
+  }
+
+  function handleSearchChangeMembre(event) {
+    const value = event.target.value;
+    setSearchTermMembre(value);
+    setIsDropdownOpenMembre(value !== "");
+  }
 
   function addNewmembres() {
     let formData = {
       membres: userIds,
     };
+
     setShowSpinner(true);
     const tokenString = localStorage.getItem("token");
     let token = JSON.parse(tokenString);
@@ -66,6 +96,8 @@ export default function CreateProject() {
         setTimeout(() => {
           setMessageSucces("");
         }, 5000);
+        getProjectWhenMembres();
+        getAllproject();
       })
       .catch((err) => {
         console.error(err);
@@ -77,6 +109,50 @@ export default function CreateProject() {
     setIduser(id);
     setNomuser(nom);
     setShowRetirer(true);
+  }
+
+  function retirerChefs(id, nom) {
+    setIduser(id);
+    setNomuser(nom);
+    setShowRetierChefs(true);
+  }
+
+  function handleAddChefDeProjet() {
+    if (filteredOptionsChef.length > 0) {
+      const selectedChef = filteredOptionsChef[0];
+      setChefDeProjet(selectedChef);
+      setIsDropdownOpenChef(false);
+      setSearchTermChef("");
+      let formData = {
+        chef_id: selectedChef.id,
+      };
+      setShowSpinner(true);
+      const tokenString = localStorage.getItem("token");
+      let token = JSON.parse(tokenString);
+      axios
+        .put(`${url}/api/entreprises/projets/chefs/${idProjet}`, formData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          getOneProjet(idProjet);
+          setMessageSucces(response.data.message);
+          setShowSpinner(false);
+          setTimeout(() => {
+            setMessageSucces("");
+          }, 5000);
+          getProjectWhenChef();
+          getAllproject();
+        })
+        .catch((err) => {
+          setMessageError(err.response.data.error);
+          setShowSpinner(false);
+          setTimeout(() => {
+            setMessageError("");
+          }, 5000);
+        });
+    }
   }
 
   function modifierProjet() {
@@ -111,10 +187,6 @@ export default function CreateProject() {
       });
   }
 
-  const filteredOptions = ListeUser.filter((user) =>
-    user.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   function removeInputField(index) {
     const values = [...inputFields];
     values.splice(index, 1);
@@ -125,12 +197,6 @@ export default function CreateProject() {
     const values = [...inputFields];
     values[index] = event.target.value;
     setInputFields(values);
-  }
-
-  function handleSearchChange(event) {
-    const value = event.target.value;
-    setSearchTerm(value);
-    setIsDropdownOpen(value !== "");
   }
 
   function addInputField() {
@@ -147,12 +213,17 @@ export default function CreateProject() {
       setSelectedMembers([...selectedMembers, option]);
       setUserIds([...userIds, option.id]);
     }
-    setSearchTerm("");
-    setIsDropdownOpen(false);
+    setSearchTermMembre("");
+    setIsDropdownOpenMembre(false);
   }
 
   function closeCreateProject() {
     setShowSetProject(false);
+  }
+
+  function closeRight(){
+    setShowListMembres(false)
+    setShowListChefs(false)
   }
 
   return (
@@ -161,7 +232,7 @@ export default function CreateProject() {
         <div className="contentCenter">
           <div
             className="formModalCreatePosts"
-            onClick={() => setShowListMembres(false)}
+            onClick={() => closeRight()}
           >
             <div className="headCreateTask pb-4">
               <div className="icone">
@@ -228,10 +299,7 @@ export default function CreateProject() {
               />
             </div>
 
-            <div className="w-52 ">
-              <label className="input flex items-center font-medium text-gray-700 mb-1">
-                &nbsp;
-              </label>
+            <div className="w-52 mt-2 ">
               <button onClick={modifierProjet} className="input btnInviter">
                 Modifier
               </button>
@@ -239,26 +307,80 @@ export default function CreateProject() {
 
             <div className="section mt-5 flex items-center">
               <div className="relative w-full">
-                <div className="label">Ajouter des nouveaux membres :</div>
-
+                <div className="label">Ajouter un nouveau chef de projet :</div>
                 <div className="flex mt-2 items-center relative">
                   <input
                     type="text"
                     placeholder="Rechercher..."
-                    value={searchTerm}
-                    onChange={handleSearchChange}
+                    value={searchTermChef}
+                    onChange={handleSearchChangeChef}
                     className="input pl-3 pr-10 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none"
                   />
                   <FontAwesomeIcon
                     icon={faPlus}
-                    onClick={() => handleOptionSelect({ email: searchTerm })}
+                    onClick={handleAddChefDeProjet}
                     className="absolute right-3 text-gray-400 cursor-pointer transition duration-200 hover:text-[rgba(0, 184, 148,1.0)] hover:scale-125"
                   />
                 </div>
-                {isDropdownOpen && (
+                {isDropdownOpenChef && (
                   <div className="absolute mt-1 w-full rounded-md bg-white shadow-lg z-10">
-                    {filteredOptions.length > 0 ? (
-                      filteredOptions.map((user, index) => (
+                    {filteredOptionsChef.length > 0 ? (
+                      filteredOptionsChef.map((user, index) => (
+                        <div
+                          key={index}
+                          className="px-4 py-2 text-sm cursor-pointer hover:bg-gray-200"
+                          onClick={handleAddChefDeProjet}
+                        >
+                          {user.email}
+                        </div>
+                      ))
+                    ) : (
+                      <div className="px-4 py-2 text-sm text-gray-500">
+                        Aucune option disponible
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="text-right mt-2">
+              <Tippy content="Liste des chefs">
+                <FontAwesomeIcon
+                  icon={faList}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowListMembres(false)
+                    setShowListChefs(true);
+
+                  }}
+                  className="w-5 h-5 mr-2 cursor-pointer"
+                />
+              </Tippy>
+            </div>
+
+            <div className="section mt-5 flex items-center">
+              <div className="relative w-full">
+                <div className="label">Ajouter des nouveaux membres :</div>
+                <div className="flex mt-2 items-center relative">
+                  <input
+                    type="text"
+                    placeholder="Rechercher..."
+                    value={searchTermMembre}
+                    onChange={handleSearchChangeMembre}
+                    className="input pl-3 pr-10 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none"
+                  />
+                  <FontAwesomeIcon
+                    icon={faPlus}
+                    onClick={() =>
+                      handleOptionSelect({ email: searchTermMembre })
+                    }
+                    className="absolute right-3 text-gray-400 cursor-pointer transition duration-200 hover:text-[rgba(0, 184, 148,1.0)] hover:scale-125"
+                  />
+                </div>
+                {isDropdownOpenMembre && (
+                  <div className="absolute mt-1 w-full rounded-md bg-white shadow-lg z-10">
+                    {filteredOptionsMembre.length > 0 ? (
+                      filteredOptionsMembre.map((user, index) => (
                         <div
                           key={index}
                           className="px-4 py-2 text-sm cursor-pointer hover:bg-gray-200"
@@ -278,7 +400,7 @@ export default function CreateProject() {
             </div>
 
             {selectedMembers.length > 0 && (
-              <div className="mt-5 ">
+              <div className="mt-2 ">
                 <div className="flex flex-wrap wrap justify-between">
                   {selectedMembers.map((member, index) => (
                     <div
@@ -309,6 +431,7 @@ export default function CreateProject() {
                     icon={faList}
                     onClick={(e) => {
                       e.stopPropagation();
+                      setShowListChefs(false);
                       setShowListMembres(true);
                     }}
                     className="w-5 h-5 mr-2 cursor-pointer"
@@ -367,6 +490,34 @@ export default function CreateProject() {
                         icon={faCircleXmark}
                         className=" text-red-500 w-5 h-5"
                         onClick={() => retirerMembres(membre.id, membre.nom)}
+                      />
+                    </Tippy>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {showListChefs && (
+            <div className="ListMembres pl-10">
+              <h1 className=" mt-10 font-bold  titreListemembres">
+                <FontAwesomeIcon
+                  icon={faList}
+                  className=" mr-2 cursor-pointer"
+                />
+                Liste des chefs :
+              </h1>
+              <ul className="heightListMembres mt-5">
+                {ListChefs.map((chef, index) => (
+                  <li
+                    key={index}
+                    className="mt-2 flex justify-between align-center onemembres"
+                  >
+                    <p className="mr-5">👤</p> <p>{chef.nom}</p>
+                    <Tippy content="Retirer du projet">
+                      <FontAwesomeIcon
+                        icon={faCircleXmark}
+                        className=" text-red-500 w-5 h-5"
+                        onClick={() => retirerChefs(chef.id, chef.nom)}
                       />
                     </Tippy>
                   </li>

@@ -112,14 +112,14 @@ export default function MyprojectPage() {
                 </Tippy>
                 {activeDropdown.type === "chef" &&
                   activeDropdown.index === index && (
-                    <ul className="w-52 border dropdown-menu absolute z-20 right-0  py-1 bg-white shadow-lg rounded-md">
+                    <ul className="w-52 border dropdown-menu absolute z-10 right-0  py-1 bg-white shadow-lg rounded-md">
                       <li
                         onClick={() => setProject(project.id)}
                         className="dropdown-item flex items-center px-3 py-2 cursor-pointer hover:bg-gray-200"
                       >
                         <FontAwesomeIcon
                           icon={faEdit}
-                          className="text-blue-400 mr-2"
+                          className="text-yellow-400 mr-2"
                         />
                         Modifier
                       </li>
@@ -139,6 +139,16 @@ export default function MyprojectPage() {
                           className="red-icon mr-2"
                         />
                         Supprimer
+                      </li>
+                      <li
+                        onClick={() => showDetails(project)}
+                        className="dropdown-item flex items-center px-3 py-2 cursor-pointer hover:bg-gray-200 "
+                      >
+                        <FontAwesomeIcon
+                          icon={faInfoCircle}
+                          className="text-blue-400 mr-2 "
+                        />
+                        Détails
                       </li>
                     </ul>
                   )}
