@@ -4,7 +4,6 @@ import {
   faXmark,
   faClock,
   faPlus,
-  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { ShowContext } from "../contexte/useShow";
 import { useContext, useState } from "react";
@@ -19,18 +18,16 @@ export default function CreateProject() {
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [userIds, setUserIds] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [inputFields, setInputFields] = useState([]);
   const [titreProjet, setTitreProjet] = useState("");
   const [description, setDescription] = useState("");
-  const [dateDebut, setDateDebut] = useState("");
   const [dateFin, setDateFin] = useState("");
 
   const { ListeUser } = useContext(UserContext);
   const { url } = useContext(UrlContext);
   const { setShowcreateTask, setShowSpinner } = useContext(ShowContext);
   const { setMessageSucces, setMessageError } = useContext(MessageContext);
-  const { getProjectWhenChef, getAllproject, getProjectWhenMembres } = useContext(ProjectContext);
-
+  const { getProjectWhenChef, getAllproject, getProjectWhenMembres } =
+    useContext(ProjectContext);
 
   function closeCreateProject() {
     setShowcreateTask(false);
@@ -60,22 +57,6 @@ export default function CreateProject() {
     setUserIds(userIds.filter((id) => id !== member.id));
   }
 
-  function addInputField() {
-    setInputFields([...inputFields, ""]);
-  }
-
-  function handleInputChange(index, event) {
-    const values = [...inputFields];
-    values[index] = event.target.value;
-    setInputFields(values);
-  }
-
-  function removeInputField(index) {
-    const values = [...inputFields];
-    values.splice(index, 1);
-    setInputFields(values);
-  }
-
   function createProjet() {
     setShowSpinner(true);
     let chefsId = [];
@@ -84,12 +65,19 @@ export default function CreateProject() {
     const userString = localStorage.getItem("user");
     let user = JSON.parse(userString);
     chefsId.push(user.id);
+    let dateActuelle = new Date();
+    let dateFormatee =
+      dateActuelle.getFullYear() +
+      "-" +
+      ("0" + (dateActuelle.getMonth() + 1)).slice(-2) +
+      "-" +
+      ("0" + dateActuelle.getDate()).slice(-2);
 
     let formData = {
       titre: titreProjet,
       description: description,
       entreprise_id: user.entreprise_id,
-      date_debut: dateDebut,
+      date_debut: dateFormatee,
       date_fin: dateFin,
       chefs: chefsId,
       membres: userIds,
@@ -102,12 +90,11 @@ export default function CreateProject() {
         },
       })
       .then((response) => {
-        getProjectWhenMembres()
-        getProjectWhenChef()
-        getAllproject()
+        getProjectWhenMembres();
+        getProjectWhenChef();
+        getAllproject();
         setTitreProjet("");
         setDescription("");
-        setDateDebut("");
         setDateFin("");
         setMessageSucces(response.data.message);
         setShowcreateTask(false);
@@ -156,20 +143,7 @@ export default function CreateProject() {
               <div className="inputGroup w-60 mb-5">
                 <label className="input flex items-center font-medium text-gray-700 mb-1">
                   <FontAwesomeIcon icon={faClock} className="w-4 h-4 mr-2" />
-                  Date de début
-                </label>
-                <input
-                  type="date"
-                  value={dateDebut}
-                  onChange={(e) => setDateDebut(e.target.value)}
-                  className="input pl-3 pr-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none"
-                />
-              </div>
-
-              <div className="inputGroup w-60 mb-5">
-                <label className="input flex items-center font-medium text-gray-700 mb-1">
-                  <FontAwesomeIcon icon={faClock} className="w-4 h-4 mr-2" />
-                  Date de fin
+                  Date limite
                 </label>
                 <input
                   type="date"
@@ -180,7 +154,6 @@ export default function CreateProject() {
               </div>
             </div>
           </div>
-
           <div className="label mt-2">Description :</div>
 
           <div className="section mt-2">
@@ -252,37 +225,12 @@ export default function CreateProject() {
             </div>
           )}
 
-          <div className="section mt-5">
-            <div className="label">Ajouter des champs d'input :</div>
-            <div className="sections mt-2">
-              {inputFields.map((input, index) => (
-                <div key={index} className="w-full relative mt-2">
-                  <input
-                    type="text"
-                    placeholder={`Champ d'input ${index + 1}`}
-                    className="input pl-3 pr-10 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none"
-                    value={input}
-                    onChange={(e) => handleInputChange(index, e)}
-                  />
-                  <FontAwesomeIcon
-                    icon={faTrash}
-                    className="faTrashIcon absolute right-3 top-1/2 transform -translate-y-1/2 text-red-500 cursor-pointer hover:text-red-700"
-                    onClick={() => removeInputField(index)}
-                  />
-                </div>
-              ))}
-              <button
-                className="addInputField mt-3 px-4 py-2 bg-yellow-500 text-white rounded-md transition duration-200"
-                onClick={addInputField}
-              >
-                <FontAwesomeIcon icon={faPlus} className=" mr-2" />
-                Ajouter un champ d'input
-              </button>
-            </div>
-          </div>
-
           <div className="mt-5">
-            <button disabled={!titreProjet || !dateDebut || !dateFin || !(userIds.length !== 0)} onClick={createProjet} className="btnInviter">
+            <button
+              disabled={!titreProjet || !dateFin || !(userIds.length !== 0)}
+              onClick={createProjet}
+              className="btnInviter"
+            >
               Créer un projet
             </button>
           </div>

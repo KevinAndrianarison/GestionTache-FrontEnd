@@ -28,17 +28,14 @@ export default function ConfirmCode() {
   function validateCompte() {
     setShowSpinner(true);
     let formData = {
-      email : emailTovalidate,
-      verification_code : codeDeValiation,
+      email: emailTovalidate,
+      verification_code: codeDeValiation,
     };
 
     axios
       .post(`${url}/api/verify-email`, formData)
       .then((response) => {
-        if (
-          response.data.message ===
-          "Email vérifié avec succès"
-        ) {
+        if (response.data.message === "Email vérifié avec succès") {
           setMessageSucces("Vérification du compte réussie !");
           setShowSpinner(false);
           setCodeDeValidation(null);
@@ -49,9 +46,7 @@ export default function ConfirmCode() {
             setMessageError("");
           }, 5000);
         }
-        if (
-          response.data.message === "Code de vérification incorrect."
-        ) {
+        if (response.data.message === "Code de vérification incorrect.") {
           setMessageError("Erreur : code incorrect !");
           setShowSpinner(false);
           setCodeDeValidation(null);

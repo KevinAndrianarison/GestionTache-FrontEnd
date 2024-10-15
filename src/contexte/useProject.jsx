@@ -10,6 +10,7 @@ export const ProjectContext = createContext({
   ListeProjectWhenMembres: [],
   ListMembres: [],
   ListChefs: [],
+  ListChefAndMembres: [],
   oneProject: {},
   nomProjet: "",
   dateDebut: "",
@@ -30,6 +31,7 @@ export function ProjectContextProvider({ children }) {
   const [idProjet, setIdProjet] = useState({});
   const [ListMembres, setListMembres] = useState([]);
   const [ListChefs, setListChefs] = useState([]);
+  const [ListChefAndMembres, setListChefAndMembres] = useState([]);
   const { url } = useContext(UrlContext);
   const { setShowSetProject } = useContext(ShowContext);
 
@@ -135,6 +137,7 @@ export function ProjectContextProvider({ children }) {
         idProjet,
         ListMembres,
         ListChefs,
+        ListChefAndMembres,
         setListeProject,
         setOneProject,
         getAllproject,
@@ -148,6 +151,7 @@ export function ProjectContextProvider({ children }) {
         setDescription,
         setListChefs,
         setListMembres,
+        setListChefAndMembres,
       }}
     >
       {children}

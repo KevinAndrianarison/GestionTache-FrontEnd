@@ -44,7 +44,7 @@ export function UserContextProvider({ children }) {
         getAllUser,
         setListeUser,
         setIduser,
-        setNomuser
+        setNomuser,
       }}
     >
       {children}

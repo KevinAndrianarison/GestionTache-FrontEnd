@@ -18,7 +18,7 @@ import { UserContext } from "../contexte/useUser";
 import Tippy from "@tippyjs/react";
 import "../styles/SetProject.css";
 
-export default function CreateProject() {
+export default function SetProject() {
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [userIds, setUserIds] = useState([]);
   const [showListMembres, setShowListMembres] = useState(false);
@@ -31,13 +31,16 @@ export default function CreateProject() {
   const [isDropdownOpenChef, setIsDropdownOpenChef] = useState(false);
   const [isDropdownOpenMembre, setIsDropdownOpenMembre] = useState(false);
 
+  const [showAddFieldModal, setShowAddFieldModal] = useState(false);
+  const [newFieldType, setNewFieldType] = useState("text");
+  const [newFieldLabel, setNewFieldLabel] = useState("");
+
   const {
     nomProjet,
     dateDebut,
     dateFin,
     description,
     setNomProjet,
-    setDateDebut,
     setDateFin,
     setDescription,
     idProjet,
@@ -46,13 +49,34 @@ export default function CreateProject() {
     getAllproject,
     getProjectWhenChef,
     getProjectWhenMembres,
-    ListChefs
+    ListChefs,
   } = useContext(ProjectContext);
   const { setMessageSucces, setMessageError } = useContext(MessageContext);
   const { url } = useContext(UrlContext);
-  const { setShowSpinner, setShowSetProject, setShowRetirer, setShowRetierChefs } =
-    useContext(ShowContext);
+  const {
+    setShowSpinner,
+    setShowSetProject,
+    setShowRetirer,
+    setShowRetierChefs,
+  } = useContext(ShowContext);
   const { ListeUser, setIduser, setNomuser } = useContext(UserContext);
+
+  function handleAddField() {
+    if (newFieldLabel.trim() !== "") {
+      setInputFields([
+        ...inputFields,
+        { type: newFieldType, label: newFieldLabel },
+      ]);
+      setShowAddFieldModal(false);
+      setNewFieldLabel("");
+    }
+  }
+
+  function removeInputField(index) {
+    const values = [...inputFields];
+    values.splice(index, 1);
+    setInputFields(values);
+  }
 
   const filteredOptionsChef = ListeUser.filter((user) =>
     user.email.toLowerCase().includes(searchTermChef.toLowerCase())
@@ -66,6 +90,10 @@ export default function CreateProject() {
     const value = event.target.value;
     setSearchTermChef(value);
     setIsDropdownOpenChef(value !== "");
+  }
+
+  function addInputField() {
+    setShowAddFieldModal(true);
   }
 
   function handleSearchChangeMembre(event) {
@@ -193,16 +221,6 @@ export default function CreateProject() {
     setInputFields(values);
   }
 
-  function handleInputChange(index, event) {
-    const values = [...inputFields];
-    values[index] = event.target.value;
-    setInputFields(values);
-  }
-
-  function addInputField() {
-    setInputFields([...inputFields, ""]);
-  }
-
   function handleRemoveMember(member) {
     setSelectedMembers(selectedMembers.filter((m) => m !== member));
     setUserIds(userIds.filter((id) => id !== member.id));
@@ -221,19 +239,16 @@ export default function CreateProject() {
     setShowSetProject(false);
   }
 
-  function closeRight(){
-    setShowListMembres(false)
-    setShowListChefs(false)
+  function closeRight() {
+    setShowListMembres(false);
+    setShowListChefs(false);
   }
 
   return (
     <>
       <div className="showModals">
         <div className="contentCenter">
-          <div
-            className="formModalCreatePosts"
-            onClick={() => closeRight()}
-          >
+          <div className="formModalCreatePosts" onClick={() => closeRight()}>
             <div className="headCreateTask pb-4">
               <div className="icone">
                 <FontAwesomeIcon
@@ -264,20 +279,7 @@ export default function CreateProject() {
                 <div className="inputGroup w-60 mb-5">
                   <label className="input flex items-center font-medium text-gray-700 mb-1">
                     <FontAwesomeIcon icon={faClock} className="w-4 h-4 mr-2" />
-                    Date de début
-                  </label>
-                  <input
-                    type="date"
-                    value={dateDebut}
-                    onChange={(e) => setDateDebut(e.target.value)}
-                    className="input pl-3 pr-3 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none"
-                  />
-                </div>
-
-                <div className="inputGroup w-60 mb-5">
-                  <label className="input flex items-center font-medium text-gray-700 mb-1">
-                    <FontAwesomeIcon icon={faClock} className="w-4 h-4 mr-2" />
-                    Date de fin
+                    Date limite
                   </label>
                   <input
                     type="date"
@@ -349,16 +351,15 @@ export default function CreateProject() {
                   icon={faList}
                   onClick={(e) => {
                     e.stopPropagation();
-                    setShowListMembres(false)
+                    setShowListMembres(false);
                     setShowListChefs(true);
-
                   }}
                   className="w-5 h-5 mr-2 cursor-pointer"
                 />
               </Tippy>
             </div>
 
-            <div className="section mt-5 flex items-center">
+            <div className="section  flex items-center">
               <div className="relative w-full">
                 <div className="label">Ajouter des nouveaux membres :</div>
                 <div className="flex mt-2 items-center relative">
@@ -441,33 +442,102 @@ export default function CreateProject() {
             </div>
 
             <div className="section mt-5">
-              <div className="label">Ajouter des champs d'input :</div>
-              <div className="sections mt-2">
+              <div className="label">Ajouter des champs :</div>
+              <div className=" w-full sections mt-2">
                 {inputFields.map((input, index) => (
                   <div key={index} className="w-full relative mt-2">
+                    <label className="input text-black font-bold input-label">
+                      {input.label} :
+                    </label>
                     <input
-                      type="text"
-                      placeholder={`Champ d'input ${index + 1}`}
-                      className="input pl-3 pr-10 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none"
-                      value={input}
-                      onChange={(e) => handleInputChange(index, e)}
+                      type={input.type}
+                      className="input pl-3 w-full pr-10 block rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none"
+                      placeholder={input.label}
                     />
                     <FontAwesomeIcon
                       icon={faTrash}
                       onClick={() => removeInputField(index)}
-                      className="faTrashIcon absolute right-3 top-1/2 transform -translate-y-1/2 text-red-500 cursor-pointer hover:text-red-700"
+                      className="faTrashIcon absolute right-3 top-1/2 mt-3 transform -translate-y-1/2 text-red-500 cursor-pointer"
                     />
                   </div>
                 ))}
-                <button
-                  className="addInputField mt-3 px-4 py-2 bg-yellow-500 text-white rounded-md transition duration-200"
-                  onClick={addInputField}
-                >
-                  <FontAwesomeIcon icon={faPlus} className=" mr-2" />
-                  Ajouter un champ d'input
-                </button>
+                <div className="flex justify-between w-full flex-wrap">
+                  <button
+                    className="addInputField mt-3 px-4 py-2 bg-yellow-500 text-white rounded-md transition duration-200"
+                    onClick={addInputField}
+                  >
+                    <FontAwesomeIcon icon={faPlus} className="mr-2" />
+                    Ajouter un champ
+                  </button>
+                  {inputFields.length !== 0 && (
+                    <button
+                      className="addInputField mt-3 px-4 py-2 bg-blue-500 text-white rounded-md transition duration-200"
+                      onClick={addInputField}
+                    >
+                      Enregistrer les nouveaux données
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
+
+            {showAddFieldModal && (
+              <div className="modalInput">
+                <div className="modal-content">
+                  <h2 className="modal-title text-left font-bold">
+                    Ajouter un champ :
+                  </h2>
+                  <div className="modal-body">
+                    <div className=" text-left flex items-end flex-wrap   mt-5 inputGroup">
+                      <label className="input text-black mr-5">
+                        Type d'input :
+                      </label>
+                      <select
+                        value={newFieldType}
+                        onChange={(e) => setNewFieldType(e.target.value)}
+                        className="input pl-3 w-52 pr-3 block rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none"
+                      >
+                        <option value="text">📝 Texte</option>
+                        <option value="number">🔢 Nombre</option>
+                        <option value="date">📅 Date</option>
+                        <option value="email">@ Email</option>
+                        <option value="url">🔗 URL</option>
+                        <option value="tel">📞 Téléphone</option>
+                        <option value="password">🔒 Mot de passe</option>
+                        <option value="search">🔍 Recherche</option>
+                        <option value="color">🎨 Couleur</option>
+                        <option value="file">📁 Fichier</option>
+                        <option value="textarea">📝 Zone de texte</option>
+                      </select>
+                    </div>
+                    <div className="text-left flex items-end flex-wrap inputGroup mt-3">
+                      <label className="input text-black  mr-5">Label :</label>
+                      <input
+                        type="text"
+                        value={newFieldLabel}
+                        onChange={(e) => setNewFieldLabel(e.target.value)}
+                        className="input pl-3 w-72 pr-3 block rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-[rgba(45, 52, 54,1.0)] focus:ring-2 focus:ring-inset focus:ring-[rgba(0, 184, 148,1.0)] focus:outline-none"
+                        placeholder="Nom du champ"
+                      />
+                    </div>
+                  </div>
+                  <div className="modal-footer mt-5">
+                    <button
+                      onClick={handleAddField}
+                      className="mr-2 bg-blue-500 text-white px-4 py-2 rounded-sm"
+                    >
+                      Ajouter
+                    </button>
+                    <button
+                      onClick={() => setShowAddFieldModal(false)}
+                      className=" bg-yellow-500 text-white px-4 py-2 rounded-sm"
+                    >
+                      Annuler
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
           {showListMembres && (
             <div className="ListMembres pl-10">

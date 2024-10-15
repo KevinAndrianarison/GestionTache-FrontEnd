@@ -20,11 +20,7 @@ export default function SeRetirer() {
             <button type="button" className="SUPPR mt-5">
               OUI
             </button>
-            <button
-              type="button"
-              onClick={closeSeRetirer}
-              className="NON mt-5"
-            >
+            <button type="button" onClick={closeSeRetirer} className="NON mt-5">
               NON
             </button>
           </div>

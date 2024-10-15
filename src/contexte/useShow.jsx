@@ -10,6 +10,7 @@ export const ShowContext = createContext({
   showDeleteUser: false,
   showcreateTask: false,
   showDeleteTask: false,
+  showDeletetask: false,
   showSetProject: false,
   showSeretirer: false,
   showRetierChefs: false,
@@ -17,6 +18,8 @@ export const ShowContext = createContext({
   showAdmin: false,
   showDeleteEntity: false,
   showRetirer: false,
+  showTask: false,
+  showSetTask: false,
 });
 
 export function ShowContextProvider({ children }) {
@@ -30,13 +33,16 @@ export function ShowContextProvider({ children }) {
   const [showDeleteEntity, setShowDeleteEntity] = useState(false);
   const [showcreateTask, setShowcreateTask] = useState(false);
   const [showDeleteTask, setShowDeleteTask] = useState(false);
+  const [showDeletetask, setShowDeletetask] = useState(false);
   const [showSetProject, setShowSetProject] = useState(false);
+  const [showSetTask, setShowSetTask] = useState(false);
   const [showSeretirer, setShowSeretirer] = useState(false);
   const [showRetirer, setShowRetirer] = useState(false);
   const [showRetierChefs, setShowRetierChefs] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [showAdmin, setShowAdmin] = useState(false);
   const [showUser, setUser] = useState(false);
+  const [showTask, setShowTask] = useState(false);
 
   return (
     <ShowContext.Provider
@@ -58,6 +64,12 @@ export function ShowContextProvider({ children }) {
         showUser,
         showRetirer,
         showRetierChefs,
+        showTask,
+        showDeletetask,
+        showSetTask,
+        setShowDeletetask,
+        setShowSetTask,
+        setShowTask,
         setShowLoginComponent,
         setShowRetirer,
         setShowcreateTask,
@@ -74,7 +86,7 @@ export function ShowContextProvider({ children }) {
         setShowAdmin,
         setShowDeleteEntity,
         setUser,
-        setShowRetierChefs
+        setShowRetierChefs,
       }}
     >
       {children}

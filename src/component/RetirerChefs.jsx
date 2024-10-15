@@ -29,15 +29,11 @@ export default function RetirerChefs() {
     };
 
     axios
-      .put(
-        `${url}/api/entreprises/projet/${idProjet}/chef-retire`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
+      .put(`${url}/api/entreprises/projet/${idProjet}/chef-retire`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         getOneProjet(idProjet);
         setMessageSucces(response.data.message);
@@ -46,15 +42,15 @@ export default function RetirerChefs() {
         setTimeout(() => {
           setMessageSucces("");
         }, 5000);
-        getProjectWhenMembres()
-        getAllproject()
+        getProjectWhenMembres();
+        getAllproject();
       })
       .catch((err) => {
         setMessageError(err.response.data.error);
         setShowSpinner(false);
         setTimeout(() => {
-            setMessageError("");
-          }, 5000);
+          setMessageError("");
+        }, 5000);
       });
   }
 
@@ -66,11 +62,7 @@ export default function RetirerChefs() {
             Voulez-vous vraiment retirer "<b>{Nomuser}</b>" de ce projet ?
           </h6>
           <div className="valider">
-            <button
-              type="button"
-              onClick={retirerChefs}
-              className="SUPPR mt-5"
-            >
+            <button type="button" onClick={retirerChefs} className="SUPPR mt-5">
               OUI
             </button>
             <button

@@ -24,7 +24,6 @@
   .modalContent {
     width: 300px;
   }
-
 }
 .closeButton {
   background: none;
@@ -49,5 +48,5 @@
 
 .titre {
   font-weight: bold;
-  color: var(  --color-secondary);
+  color: var(--color-secondary);
 }

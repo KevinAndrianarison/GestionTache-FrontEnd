@@ -180,7 +180,9 @@ export function GestionEntity() {
                 >
                   <li className="nomSociete">{list.nom}</li>
                   <li className="nomAdmin">{list.administrateurs[0].nom}</li>
-                  <li className="AdresseEmail">{list.administrateurs[0].email}</li>
+                  <li className="AdresseEmail">
+                    {list.administrateurs[0].email}
+                  </li>
                   <li
                     className="trash"
                     onClick={() => {

@@ -16,14 +16,16 @@ import Tippy from "@tippyjs/react";
 import { useState, useContext, useEffect } from "react";
 import { ShowContext } from "../contexte/useShow";
 import { ProjectContext } from "../contexte/useProject";
+import { TaskContext } from "../contexte/useTask";
+import { useNavigate } from "react-router-dom";
 
 export default function MyprojectPage() {
-  const {
-    setShowDeleteTask,
-    setShowSetProject,
-    setShowSeretirer,
-    setShowDetails,
-  } = useContext(ShowContext);
+  const entityString = localStorage.getItem("entity");
+  let entity = JSON.parse(entityString);
+  const { setShowDeleteTask, setShowSeretirer, setShowDetails, setShowTask } =
+    useContext(ShowContext);
+  const navigate = useNavigate();
+
   const {
     getProjectWhenChef,
     ListeProjectWhenChef,
@@ -32,12 +34,18 @@ export default function MyprojectPage() {
     getProjectWhenMembres,
     setOneProject,
     getOneProjet,
+    setListChefAndMembres,
   } = useContext(ProjectContext);
+  const { getAllTask } = useContext(TaskContext);
 
   const [activeDropdown, setActiveDropdown] = useState({
     type: "",
     index: null,
   });
+
+  function showMyTaskDetails() {
+    navigate(`/${entity}/MyTask`);
+  }
 
   useEffect(() => {
     getProjectWhenChef();
@@ -47,6 +55,13 @@ export default function MyprojectPage() {
   function showDetails(list) {
     setOneProject(list);
     setShowDetails(true);
+  }
+
+  function showTaskModal(list, id) {
+    setIdProject(id);
+    getAllTask(id);
+    setListChefAndMembres(list);
+    setShowTask(true);
   }
 
   const toggleDropdown = (type, index) => {
@@ -88,7 +103,7 @@ export default function MyprojectPage() {
         <div className="headMyProject">
           <li className="Pris ml-2">Créer par</li>
           <li className="Titres pl-2">Titre du projet</li>
-          <li className="Priorites">Date de début</li>
+          <li className="Priorites">Date de création</li>
           <li className="Dates">Date limite</li>
           <li className="more mr-2"></li>
         </div>
@@ -123,6 +138,21 @@ export default function MyprojectPage() {
                         />
                         Modifier
                       </li>
+                      <li
+                        onClick={() =>
+                          showTaskModal(
+                            [...project.chefs, ...project.membres],
+                            project.id
+                          )
+                        }
+                        className="dropdown-item flex items-center px-3 py-2 cursor-pointer hover:bg-gray-200"
+                      >
+                        <FontAwesomeIcon
+                          icon={faThumbtack}
+                          className="text-blue-400 mr-2"
+                        />
+                        Tâches
+                      </li>
                       <li className="dropdown-item flex items-center px-3 py-2 cursor-pointer hover:bg-gray-200">
                         <FontAwesomeIcon
                           icon={faChartLine}
@@ -130,6 +160,7 @@ export default function MyprojectPage() {
                         />
                         Progression
                       </li>
+
                       <li
                         className="dropdown-item flex items-center px-3 py-2 cursor-pointer hover:bg-gray-200"
                         onClick={() => deleteProject(project.id)}
@@ -163,7 +194,7 @@ export default function MyprojectPage() {
         </h1>
         <div className="headMyProject">
           <li className="pl-2 Titres">Titre</li>
-          <li className="Priorites">Date de début</li>
+          <li className="Priorites">Date de création</li>
           <li className="Dates">Date limite</li>
           <li className="fait mr-3 text-center retirer">Se retirer</li>
           <li className="more mr-2"></li>
@@ -196,6 +227,7 @@ export default function MyprojectPage() {
                   activeDropdown.index === index && (
                     <ul className="border dropdown-menu absolute z-10 right-0  py-1 w-52 bg-white shadow-lg rounded-md">
                       <li
+                        onClick={showMyTaskDetails}
                         className="dropdown-item flex items-center px-3 py-2 cursor-pointer hover:bg-gray-200"
                       >
                         <FontAwesomeIcon

@@ -17,6 +17,7 @@ import { Routes, Route, NavLink } from "react-router-dom";
 import { ShowContext } from "../contexte/useShow";
 import { useContext } from "react";
 import Tippy from "@tippyjs/react";
+import MyTaskDetails from "./MyTaskDetails";
 
 export default function MainPage() {
   const entityString = localStorage.getItem("entity");
@@ -122,6 +123,7 @@ export default function MainPage() {
               <>
                 <Route path="/" element={<AllprojectPage />} />
                 <Route path=":entity/MyProject" element={<MyprojectPage />} />
+                <Route path=":entity/MyTask" element={<MyTaskDetails />} />
                 {showAdmin && (
                   <Route path=":entity/AddUser" element={<GestionUserPage />} />
                 )}

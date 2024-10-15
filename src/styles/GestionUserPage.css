@@ -38,7 +38,7 @@
   .errEmail {
     font-size: 12px;
   }
-  .faTrash{
+  .faTrash {
     height: 15px;
   }
 }
@@ -47,10 +47,10 @@
   .labelBTN {
     display: none;
   }
-  .BodyList{
+  .BodyList {
     font-size: 10px;
   }
-  .posteList{
+  .posteList {
     display: none;
   }
 }
@@ -92,7 +92,7 @@
   border-radius: 50%;
   background-size: cover;
   background-repeat: no-repeat;
-  background-image: url("../assets/student-avatar-user-profile-icon-vector-47025187.jpg");
+  background-image: url("../images/student-avatar-user-profile-icon-vector-47025187.jpg");
 }
 
 .infosuser {
@@ -170,28 +170,24 @@
   height: 40px;
 }
 
-.bodyValue{
+.bodyValue {
   height: 80%;
   font-weight: 500;
   overflow-y: scroll;
 }
 
-
-.nomList{
+.nomList {
   width: 30%;
 }
 
-.adresseList{
+.adresseList {
   width: 30%;
-
 }
-.posteList{
+.posteList {
   width: 20%;
-
 }
 
-.deleteList{
+.deleteList {
   width: 10%;
   text-align: center;
-
 }

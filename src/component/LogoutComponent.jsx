@@ -5,8 +5,6 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { UrlContext } from "../contexte/useUrl";
 
-
-
 export default function LogoutComponent() {
   const {
     setShowLogout,
@@ -19,24 +17,20 @@ export default function LogoutComponent() {
   const { url } = useContext(UrlContext);
   const { setShowSpinner } = useContext(ShowContext);
 
-
   function closeLogout() {
     setShowLogout(false);
   }
 
   function logout() {
-    setShowSpinner(true)
+    setShowSpinner(true);
     const tokenString = localStorage.getItem("token");
     let token = JSON.parse(tokenString);
     axios
-      .get(
-        `${url}/api/logout`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
+      .get(`${url}/api/logout`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
@@ -44,13 +38,13 @@ export default function LogoutComponent() {
         setShowLogout(false);
         setShowMainPage(false);
         setShowLoginComponent(true);
-        setShowSpinner(false)
+        setShowSpinner(false);
         setShowLoginPage(true);
         navigate("/");
       })
       .catch((err) => {
         console.error(err);
-        setShowSpinner(false)
+        setShowSpinner(false);
       });
   }
 

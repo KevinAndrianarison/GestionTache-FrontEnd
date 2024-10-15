@@ -16,6 +16,9 @@ import RetirerMembres from "./component/RetirerMembres";
 import RetirerChefs from "./component/RetirerChefs";
 import DetailsProject from "./component/DetailsProjet";
 import DeleteEntity from "./component/DeleteEntity";
+import DeleteTask from "./component/DeleteTask";
+import SetTask from "./component/SetTask";
+import Task from "./component/Task";
 import { UserContext } from "./contexte/useUser";
 import { useNavigate } from "react-router-dom";
 
@@ -38,7 +41,10 @@ function App() {
     showDeleteEntity,
     showRetirer,
     setUser,
-    showRetierChefs
+    showRetierChefs,
+    showTask,
+    showDeletetask,
+    showSetTask,
   } = useContext(ShowContext);
   const { getAllUser } = useContext(UserContext);
   const navigate = useNavigate();
@@ -88,6 +94,9 @@ function App() {
       {showDeleteEntity && <DeleteEntity />}
       {showRetirer && <RetirerMembres />}
       {showRetierChefs && <RetirerChefs />}
+      {showTask && <Task />}
+      {showDeletetask && <DeleteTask />}
+      {showSetTask && <SetTask />}
 
       <AlertComponent />
     </div>

@@ -46,8 +46,8 @@ export default function RetierMembres() {
         setTimeout(() => {
           setMessageSucces("");
         }, 5000);
-        getProjectWhenMembres()
-        getAllproject()
+        getProjectWhenMembres();
+        getAllproject();
       })
       .catch((err) => {
         console.error(err);

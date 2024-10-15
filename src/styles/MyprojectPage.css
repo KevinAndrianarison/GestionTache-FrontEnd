@@ -39,21 +39,19 @@ li {
   list-style: none;
 }
 
-
 .Date,
 .Statuts,
 .Priorite {
   width: 20%;
 }
 
-.Dates, .Priorites{
+.Dates,
+.Priorites {
   width: 30%;
-
 }
 
-.fait{
+.fait {
   width: 10%;
-  
 }
 
 .Pris {
@@ -82,43 +80,42 @@ li {
   .Pris {
     display: none;
   }
- 
+
   .more {
     width: 10%;
   }
-  .Priorite{
+  .Priorite {
     width: 20%;
   }
-  .Statuts, .Priorites{
+  .Statuts,
+  .Priorites {
     display: none;
   }
-  .Titres{
+  .Titres {
     width: 40%;
     margin-left: 10px;
-
   }
 
-  .fait{
+  .fait {
     width: 30%;
   }
-
 }
 
-.iconeDone{
+.iconeDone {
   color: rgba(17, 209, 17, 0.979);
   cursor: pointer;
 }
 
-.red-icon, .retirerIcone {
+.red-icon,
+.retirerIcone {
   color: rgba(255, 0, 0, 0.637);
 }
 
-.retirerIcone{
+.retirerIcone {
   cursor: pointer;
 }
 
-.mycreate{
+.mycreate {
   font-weight: bold;
   border-bottom: 2px solid rgba(128, 128, 128, 0.185);
-
 }

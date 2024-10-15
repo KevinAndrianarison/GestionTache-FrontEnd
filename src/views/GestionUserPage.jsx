@@ -192,7 +192,7 @@ export default function GestionUserPage() {
                       <Tippy content="Options">
                         <FontAwesomeIcon
                           icon={faEllipsis}
-                          className="w-5 h-5 mt-2  cursor-pointer"
+                          className="w-5 h-5 mt-2 mr-2  cursor-pointer"
                           onClick={(e) => {
                             e.stopPropagation();
                             toggleDropdown(index);
